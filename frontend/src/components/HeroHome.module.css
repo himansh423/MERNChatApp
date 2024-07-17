@@ -1,0 +1,30 @@
+.head {
+  font-size: 25px;
+  color: #ffffff;
+  font-family: "Bowlby One SC", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.description {
+  font-size: 14px;
+  color: #a7aabe;
+  font-family: "Courier Prime", monospace;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.chatting {
+  font-family: "Times New Roman", Times, serif;
+  font-weight: 100;
+  font-style: normal;
+  font-size: 16px;
+}
+
+.arrow {
+  background-color: rgba(255, 255, 255, 0.882);
+  backdrop-filter: blur(20px);
+  font-family: Reddit Mono;
+}

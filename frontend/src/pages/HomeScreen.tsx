@@ -1,8 +1,9 @@
+import HeroHome from "../components/HeroHome"
 
 const HomeScreen = () => {
   return (
     <div>
-      <h1 className="text-2xl">home screen</h1>
+      <HeroHome/>
     </div>
   )
 }
