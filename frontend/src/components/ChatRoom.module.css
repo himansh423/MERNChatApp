@@ -43,7 +43,6 @@
 
 .content {
   flex: 1;
-  overflow-y: auto;
   margin-top: 64px; /* Same as the header height */
   margin-bottom: 50px; /* Same as the input container height */
   background-color: #141414;
