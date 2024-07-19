@@ -1,12 +1,12 @@
 .inputContainer {
-  position: fixed; /* Change from absolute to fixed */
+  position: fixed;
   bottom: 0;
   width: 100%;
   background-color: #ccc;
   display: flex;
   align-items: center;
   padding: 10px;
-  transition: bottom 0.3s; /* Smooth transition */
+  transition: bottom 0.3s;
 }
 
 .inputContainer input {
@@ -25,4 +25,27 @@
 .inputContainer button div {
   font-size: 24px;
   color: #000;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #ffffff0a;
+  height: 64px; /* Adjust height if needed */
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 20px;
+  border-bottom: 1px solid grey;
+  z-index: 10;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 64px; /* Same as the header height */
+  margin-bottom: 50px; /* Same as the input container height */
+  background-color: #141414;
+  color: white;
 }

@@ -38,31 +38,29 @@ const ChatRoom: React.FC = () => {
   }, []);
 
   return (
-    <main>
-      <div className="h-screen w-screen bg-[#141414] flex flex-col">
-        <div className="bg-[#ffffff0A] h-16 w-full px-5 fixed border-b-[1px] flex items-center gap-5 border-[grey]">
-          <div className="h-[37px] w-[37px] border">
-            <img src={img} className="w-[40px] filter invert h-[40px]" alt="" />
+    <main className="h-screen w-screen bg-[#141414] flex flex-col">
+      <div className={styles.header}>
+        <div className="h-[37px] w-[37px] border">
+          <img src={img} className="w-[40px] filter invert h-[40px]" alt="" />
+        </div>
+        <div>
+          <h1 className="text-[#BFBFBF]">Hello World</h1>
+          <div className="flex text-[10px] text-[#808080]">
+            <p>Participant1</p>,
+            <p>Participant2</p>
           </div>
+        </div>
+      </div>
+      <div className={styles.content}>
+        {/* Chat messages */}
+      </div>
+      <div className={styles.inputContainer} style={{ bottom: `${inputContainerBottom}px` }}>
+        <input type="text" />
+        <button type="submit">
           <div>
-            <h1 className="text-[#BFBFBF]">Hello World</h1>
-            <div className="flex text-[10px] text-[#808080]">
-              <p>Participant1</p>,
-              <p>Participant2</p>
-            </div>
+            <IoSendSharp />
           </div>
-        </div>
-        <div className="text-white mt-20 h-full bg-[#141414] overflow-x-scroll">
-          {/* Chat messages */}
-        </div>
-        <div className={styles.inputContainer} style={{ bottom: `${inputContainerBottom}px` }}>
-          <input type="text" />
-          <button type="submit">
-            <div>
-              <IoSendSharp />
-            </div>
-          </button>
-        </div>
+        </button>
       </div>
     </main>
   );
