@@ -38,7 +38,7 @@ const ChatRoom: React.FC = () => {
   }, []);
 
   return (
-    <main className="h-screen w-screen bg-[#141414] flex flex-col">
+    <div>
       <div className={styles.header}>
         <div className="h-[37px] w-[37px] border">
           <img src={img} className="w-[40px] filter invert h-[40px]" alt="" />
@@ -50,8 +50,10 @@ const ChatRoom: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className={styles.content}>
-        <div className="chatContainer">lorem*60</div>
+      <div className="h-screen w-screen bg-[#141414] flex flex-col">
+        <div className={styles.content}>
+          <div className="chatContainer">lorem*60</div>
+        </div>
       </div>
       <div
         className={styles.inputContainer}
@@ -64,7 +66,7 @@ const ChatRoom: React.FC = () => {
           </div>
         </button>
       </div>
-    </main>
+    </div>
   );
 };
 
