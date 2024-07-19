@@ -1,11 +1,12 @@
 .inputContainer {
-  position: absolute;
+  position: fixed; /* Change from absolute to fixed */
   bottom: 0;
   width: 100%;
   background-color: #ccc;
   display: flex;
   align-items: center;
   padding: 10px;
+  transition: bottom 0.3s; /* Smooth transition */
 }
 
 .inputContainer input {
