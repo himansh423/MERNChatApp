@@ -51,20 +51,25 @@ const ChatRoom: React.FC = () => {
         </div>
       </div>
       <div className={`${styles.ChatContent}`}>
-        <div className="flex gap-5 flex-col items-end">
-          <div className={`${styles.Sender} bg-[#1F1E15] max-w-[70%] p-4 rounded-lg`}>
+        <div className="flex gap-5 flex-col">
+          <div className={`${styles.Sender}`}>
             <p className="text">
               1Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores quasi quo accusamus. Voluptate praesentium at delectus a alias accusantium, ea omnis, nulla asperiores excepturi cum voluptates illum, aut temporibus.
             </p>
           </div>
-          <div className={`${styles.Sender} bg-[#1F1E15] max-w-[70%] p-4 rounded-lg`}>
+          <div className={`${styles.Sender}`}>
             <p className="text">
               2Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores quasi quo accusamus. Voluptate praesentium at delectus a alias accusantium, ea omnis, nulla asperiores excepturi cum voluptates illum, aut temporibus.
             </p>
           </div>
-          <div className={`${styles.Sender} bg-[#1F1E15] max-w-[70%] p-4 rounded-lg`}>
+          <div className={`${styles.reciever}`}>
             <p className="text">
-              2Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores quasi quo accusamus. Voluptate praesentium at delectus a alias accusantium, ea omnis, nulla asperiores excepturi cum voluptates illum, aut temporibus.
+              3Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores quasi quo accusamus. Voluptate praesentium at delectus a alias accusantium, ea omnis, nulla asperiores excepturi cum voluptates illum, aut temporibus.
+            </p>
+          </div>
+          <div className={`${styles.reciever}`}>
+            <p className="text">
+              4Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores quasi quo accusamus. Voluptate praesentium at delectus a alias accusantium, ea omnis, nulla asperiores excepturi cum voluptates illum, aut temporibus.
             </p>
           </div>
         </div>
