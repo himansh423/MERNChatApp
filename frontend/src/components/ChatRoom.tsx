@@ -50,13 +50,26 @@ const ChatRoom: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className={styles.content}>
-        <div className="chatContainer">lorem*60</div>
+      <div className={`${styles.ChatContent}`}>
+        <div className="flex gap-5 flex-col items-end">
+          <div className={`${styles.Sender} bg-[#1F1E15] max-w-[70%] p-4 rounded-lg`}>
+            <p className="text">
+              1Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores quasi quo accusamus. Voluptate praesentium at delectus a alias accusantium, ea omnis, nulla asperiores excepturi cum voluptates illum, aut temporibus.
+            </p>
+          </div>
+          <div className={`${styles.Sender} bg-[#1F1E15] max-w-[70%] p-4 rounded-lg`}>
+            <p className="text">
+              2Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores quasi quo accusamus. Voluptate praesentium at delectus a alias accusantium, ea omnis, nulla asperiores excepturi cum voluptates illum, aut temporibus.
+            </p>
+          </div>
+          <div className={`${styles.Sender} bg-[#1F1E15] max-w-[70%] p-4 rounded-lg`}>
+            <p className="text">
+              2Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores quasi quo accusamus. Voluptate praesentium at delectus a alias accusantium, ea omnis, nulla asperiores excepturi cum voluptates illum, aut temporibus.
+            </p>
+          </div>
+        </div>
       </div>
-      <div
-        className={`${styles.inputContainer}`}
-        style={{ bottom: `${inputContainerBottom}px` }}
-      >
+      <div className={`${styles.inputContainer}`} style={{ bottom: `${inputContainerBottom}px` }}>
         <textarea
           placeholder="Type a Reply..."
           className="text-[#808080] text-wrap"

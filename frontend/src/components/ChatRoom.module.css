@@ -55,14 +55,18 @@
   z-index: 10;
 }
 
-.content {
+.ChatContent {
   flex: 1;
   margin-top: 64px;
-  margin-bottom: 50px; 
+  margin-bottom: 60px; 
   background-color: #141414;
   color: white;
   overflow-y: auto;
   padding: 20px;
   box-sizing: border-box;
-  height: calc(100vh - 114px);
+  height: calc(100vh - 124px); /* Adjusted for header and input container height */
+}
+
+.Sender {
+  border-bottom-right-radius: 1px;
 }
