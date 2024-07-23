@@ -16,7 +16,7 @@ const HeroHome = () => {
           Connect privately with friends, family, or colleagues. Create a secure
           chat room and start your conversation instantly.
         </h1>
-        <Link to={"/chatroom/1"} className="h-16 w-52 mt-2 pl-2 flex justify-center items-center gap-5 rounded-[40px] bg-[#5201ff]">
+        <Link to={"/login"} className="h-16 w-52 mt-2 pl-2 flex justify-center items-center gap-5 rounded-[40px] bg-[#5201ff]">
           <span className={`${styles.chatting} text-white`}>
             START CHATTING
           </span>

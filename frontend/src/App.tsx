@@ -9,17 +9,18 @@ import {
 const Navbar = lazy(() => import("./components/Header.tsx"));
 const HomeScreen = lazy(() => import("./pages/HomeScreen"));
 const ChatRoom = lazy(() => import("./components/ChatRoom.tsx"));
-
+const Login = lazy(() => import("./components/Login.tsx"))
 const AppContent = () => {
   const location = useLocation();
   const isChatRoom = location.pathname.startsWith("/chatroom/");
-
+  
   return (
     <>
       {!isChatRoom && <Navbar />}
       <Routes>
         <Route path="/" element={<HomeScreen />} />
         <Route path="/chatroom/:id" element={<ChatRoom />} />
+        <Route path="/login" element={<Login/>} />
       </Routes>
     </>
   );
