@@ -1,6 +1,6 @@
 import { FaGoogle } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
-import styles from "./Login.module.css";
+import styles from "./SignUp.module.css";
 import { Link } from "react-router-dom";
 
 const SignUp = () => {

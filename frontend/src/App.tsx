@@ -11,6 +11,7 @@ const HomeScreen = lazy(() => import("./pages/HomeScreen"));
 const ChatRoom = lazy(() => import("./components/ChatRoom.tsx"));
 const Login = lazy(() => import("./components/Login.tsx"));
 const SignUp = lazy(() => import("./components/SignUp.tsx"));
+const CreateChatRoom =lazy(() => import("./pages/CreateChatRoom.tsx"));
 const AppContent = () => {
   const location = useLocation();
   const isChatRoom = location.pathname.startsWith("/chatroom/");
@@ -23,6 +24,7 @@ const AppContent = () => {
         <Route path="/chatroom/:id" element={<ChatRoom />} />
         <Route path="/login" element={<Login/>} />
         <Route path="/signup" element={<SignUp/>} />
+        <Route path="/createChatRoom" element={<CreateChatRoom/>} />
       </Routes>
     </>
   );
