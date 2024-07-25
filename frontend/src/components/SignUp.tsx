@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const SignUp = () => {
   return (
-    <main className="bg-black py-4 h-screen w-screen text-white">
+    <main className="bg-black py-4 h-[120vh] w-screen text-white">
       <div className="flex justify-center flex-col">
         <h1 className={`${styles.head} text-center font-bold`}>Sign up</h1>
         <p className="text-center mt-2 text-gray-600 text-[13px]">

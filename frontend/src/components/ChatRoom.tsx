@@ -1,47 +1,58 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { IoSendSharp } from "react-icons/io5";
 import img from "../assets/chatlogo.png";
 import styles from "./ChatRoom.module.css";
+import { io, Socket } from "socket.io-client";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+import { messageAction } from "../store/message";
 
 const ChatRoom: React.FC = () => {
-  const [inputContainerBottom, setInputContainerBottom] = useState(0);
+  const { id } = useParams<{ id: string }>();
+  const socket = useRef<Socket | null>(null);
+  const messages = useSelector((store: RootState) => store.message.messages);
+  const messageRef = useRef<HTMLTextAreaElement | null>(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const adjustHeight = () => {
-      const viewportHeight = window.innerHeight;
-      const documentHeight = document.documentElement.clientHeight;
+    socket.current = io("http://localhost:3000");
 
-      if (viewportHeight < documentHeight) {
-        setInputContainerBottom(documentHeight - viewportHeight);
-      } else {
-        setInputContainerBottom(0);
-      }
-    };
+    socket.current.on("connect", () => {
+      console.log("Connected with ID: ", socket.current?.id);
+      socket.current?.emit("join-room", id);
+    });
 
-    const handleFocus = () => {
-      setTimeout(adjustHeight, 300);
-    };
-
-    const handleBlur = () => {
-      setTimeout(adjustHeight, 300);
-    };
-
-    window.addEventListener("resize", adjustHeight);
-    window.addEventListener("focusin", handleFocus);
-    window.addEventListener("focusout", handleBlur);
+    socket.current.on("receive-message", (data: string) => {
+      console.log("Message received: ", data);
+      dispatch(messageAction.messageReceived({ text: data }));
+    });
 
     return () => {
-      window.removeEventListener("resize", adjustHeight);
-      window.removeEventListener("focusin", handleFocus);
-      window.removeEventListener("focusout", handleBlur);
+      socket.current?.disconnect();
     };
-  }, []);
+  }, [id, dispatch]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (messageRef.current) {
+      const message = messageRef.current.value;
+      console.log("Sending message: ", message);
+      socket.current?.emit("message", message);
+      dispatch(messageAction.messageSent({ text: message }));
+      messageRef.current.value = "";
+    }
+  };
 
   return (
     <div className="h-screen w-screen bg-[#141414] flex flex-col">
       <div className={styles.header}>
         <div className="h-[37px] w-[37px] border">
-          <img src={img} className="w-[40px] filter invert h-[40px]" alt="" />
+          <img
+            src={img}
+            className="w-[40px] filter invert h-[40px]"
+            alt="Chat logo"
+          />
         </div>
         <div>
           <h1 className="text-[#BFBFBF]">Hello World</h1>
@@ -50,42 +61,38 @@ const ChatRoom: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className={`${styles.ChatContent}`}>
-        <div className="flex gap-5 flex-col">
-          <div className={`${styles.Sender}`}>
-            <p className="text">
-              1Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores quasi quo accusamus. Voluptate praesentium at delectus a alias accusantium, ea omnis, nulla asperiores excepturi cum voluptates illum, aut temporibus.
-            </p>
-          </div>
-          <div className={`${styles.Sender}`}>
-            <p className="text">
-              2Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores quasi quo accusamus. Voluptate praesentium at delectus a alias accusantium, ea omnis, nulla asperiores excepturi cum voluptates illum, aut temporibus.
-            </p>
-          </div>
-          <div className={`${styles.reciever}`}>
-            <p className="text">
-              3Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores quasi quo accusamus. Voluptate praesentium at delectus a alias accusantium, ea omnis, nulla asperiores excepturi cum voluptates illum, aut temporibus.
-            </p>
-          </div>
-          <div className={`${styles.reciever}`}>
-            <p className="text">
-              4Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia asperiores quasi quo accusamus. Voluptate praesentium at delectus a alias accusantium, ea omnis, nulla asperiores excepturi cum voluptates illum, aut temporibus.
-            </p>
-          </div>
-        </div>
+      <div className={styles.ChatContent}>
+        {messages
+          .slice()
+          .reverse()
+          .map((message, index) => (
+            <div key={index} className="flex gap-5 flex-col justify-end">
+              <div
+                className={
+                  message.type === "sent" ? styles.Sender : styles.reciever
+                }
+              >
+                <p className="text">{message.text}</p>
+              </div>
+            </div>
+          ))}
       </div>
-      <div className={`${styles.inputContainer}`} style={{ bottom: `${inputContainerBottom}px` }}>
+      <form
+        onSubmit={handleSubmit}
+        className={styles.inputContainer}
+      >
         <textarea
           placeholder="Type a Reply..."
           className="text-[#808080] text-wrap"
           style={{ border: "1px solid grey" }}
+          ref={messageRef}
         />
         <button type="submit">
           <div>
             <IoSendSharp className="text-[#808080] text-2xl" />
           </div>
         </button>
-      </div>
+      </form>
     </div>
   );
 };

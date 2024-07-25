@@ -5,6 +5,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
+import Burger from "./components/Burger.tsx";
 
 const Navbar = lazy(() => import("./components/Header.tsx"));
 const HomeScreen = lazy(() => import("./pages/HomeScreen"));
@@ -14,14 +15,14 @@ const SignUp = lazy(() => import("./components/SignUp.tsx"));
 const CreateChatRoom =lazy(() => import("./pages/CreateChatRoom.tsx"));
 const AppContent = () => {
   const location = useLocation();
-  const isChatRoom = location.pathname.startsWith("/chatroom/");
+  const isChatRoom = location.pathname.startsWith("/chatroom");
   
   return (
     <>
-      {!isChatRoom && <Navbar />}
+      {!isChatRoom && [<Navbar />,<Burger/>]}
       <Routes>
         <Route path="/" element={<HomeScreen />} />
-        <Route path="/chatroom/:id" element={<ChatRoom />} />
+        <Route path="/chatroom" element={<ChatRoom />} />
         <Route path="/login" element={<Login/>} />
         <Route path="/signup" element={<SignUp/>} />
         <Route path="/createChatRoom" element={<CreateChatRoom/>} />

@@ -2,7 +2,7 @@ import styles from "./CreateChatRoom.module.css";
 
 const CreateChatRoom = () => {
   return (
-    <main className="bg-black py-4 h-screen w-screen text-white">
+    <main className="bg-black py-4 h-[120vh] w-screen text-white">
       <div>
       <h1 className={`${styles.head} text-center font-bold`}>Create Chatroom</h1>
       <form className="flex flex-col items-center mt-7 px-5">
