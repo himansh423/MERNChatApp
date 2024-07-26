@@ -1,11 +1,34 @@
-import { FaGoogle } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { register, storeUserData } from '../utils/authUtils';
 import styles from "./SignUp.module.css";
-import { Link } from "react-router-dom";
+import { FaGithub, FaGoogle } from 'react-icons/fa';
+const SignUp: React.FC = () => {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-const SignUp = () => {
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const userData = await register(username, email, password);
+      storeUserData(userData);
+      navigate('/');
+    } catch (err) {
+      setError('Registration failed');
+    }
+  };
+
   return (
-    <main className="bg-black py-4 h-[120vh] w-screen text-white">
+    
+
+
+
+
+<main className="bg-black py-4 h-[120vh] w-screen text-white">
+{error && <p>{error}</p>}
       <div className="flex justify-center flex-col">
         <h1 className={`${styles.head} text-center font-bold`}>Sign up</h1>
         <p className="text-center mt-2 text-gray-600 text-[13px]">
@@ -24,11 +47,14 @@ const SignUp = () => {
           </button>
         </div>
 
-        <form className="flex flex-col items-center mt-7 px-5">
+        <form onSubmit={handleSignUp} className="flex flex-col items-center mt-7 px-5">
         <div className="flex flex-col gap-2 w-full ">
             <label htmlFor="name" className="px-1">Name*</label>
             <input
               type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
               className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
               name="name"
               id="name"
@@ -39,6 +65,9 @@ const SignUp = () => {
             <label htmlFor="email" className="px-1">Email*</label>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
               className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
               name="email"
               id="email"
@@ -49,6 +78,9 @@ const SignUp = () => {
             <label htmlFor="password" className="px-1">Password*</label>
             <input
               type="password"
+              value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
               className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
               name="password"
               id="password"
@@ -64,7 +96,10 @@ const SignUp = () => {
         </p>
       </div>
     </main>
-  );
+
+
+
+);
 };
 
 export default SignUp;
