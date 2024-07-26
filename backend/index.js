@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const { Server } = require('socket.io');
+const { v4: uuidv4 } = require('uuid');
 const port = 3000;
 const cors = require('cors');
 
@@ -15,12 +16,24 @@ const io = new Server(server, {
   },
 });
 
+app.use(cors());
+
+app.get("/", (req, res) => {
+  res.send("Hello world");
+});
+
+
+app.get("/create-room", (req, res) => {
+  const roomId = uuidv4(); 
+  res.json({ roomId });
+});
+
 io.on("connection", (socket) => {
   console.log("User connected", socket.id);
 
   socket.on("message", (data) => {
     console.log("Received message: ", data);
-    socket.broadcast.emit("receive-message", data);
+    socket.broadcast.to(data.roomId).emit("receive-message", data.message);
   });
 
   socket.on("join-room", (room) => {
@@ -31,12 +44,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected", socket.id);
   });
-});
-
-app.use(cors());
-
-app.get("/", (req, res) => {
-  res.send("Hello world");
 });
 
 server.listen(port, () => {

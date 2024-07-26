@@ -1,6 +1,6 @@
 import styles from "./CreateChatRoom.module.css";
 
-const CreateChatRoom = () => {
+const CreateChatRoom :React.FC<{ onCreateRoom: () => void }> = ({ onCreateRoom }) => {
   return (
     <main className="bg-black py-4 h-[120vh] w-screen text-white">
       <div>
@@ -53,7 +53,7 @@ const CreateChatRoom = () => {
             />
           </div>
 
-          <button className={`${styles.SubmitButton} mt-7 w-full h-14 bg-purple-600  text-white py-2 px-4 rounded`}>Create Chatroom</button>
+          <button onClick={onCreateRoom} className={`${styles.SubmitButton} mt-7 w-full h-14 bg-purple-600  text-white py-2 px-4 rounded`}>Create Chatroom</button>
         </form>
       </div>
     </main>

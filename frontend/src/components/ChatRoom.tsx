@@ -9,7 +9,7 @@ import { RootState } from "../store";
 import { messageAction } from "../store/message";
 
 const ChatRoom: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { idofroom } = useParams<{ idofroom: string }>();
   const socket = useRef<Socket | null>(null);
   const messages = useSelector((store: RootState) => store.message.messages);
   const messageRef = useRef<HTMLTextAreaElement | null>(null);
@@ -20,7 +20,7 @@ const ChatRoom: React.FC = () => {
 
     socket.current.on("connect", () => {
       console.log("Connected with ID: ", socket.current?.id);
-      socket.current?.emit("join-room", id);
+      socket.current?.emit("join-room", idofroom);
     });
 
     socket.current.on("receive-message", (data: string) => {
@@ -31,14 +31,14 @@ const ChatRoom: React.FC = () => {
     return () => {
       socket.current?.disconnect();
     };
-  }, [id, dispatch]);
+  }, [idofroom, dispatch]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (messageRef.current) {
       const message = messageRef.current.value;
       console.log("Sending message: ", message);
-      socket.current?.emit("message", message);
+      socket.current?.emit("message", { roomId: idofroom, message });
       dispatch(messageAction.messageSent({ text: message }));
       messageRef.current.value = "";
     }
@@ -77,10 +77,7 @@ const ChatRoom: React.FC = () => {
             </div>
           ))}
       </div>
-      <form
-        onSubmit={handleSubmit}
-        className={styles.inputContainer}
-      >
+      <form onSubmit={handleSubmit} className={styles.inputContainer}>
         <textarea
           placeholder="Type a Reply..."
           className="text-[#808080] text-wrap"
