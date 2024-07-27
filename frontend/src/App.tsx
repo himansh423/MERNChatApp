@@ -11,6 +11,7 @@ const SignUp = lazy(() => import("./components/SignUp"));
 const CreateChatRoomOptions = lazy(() => import("./components/CreateChatRoomOptions"));
 const CreateChatRoom = lazy(() => import("./pages/CreateChatRoom"));
 const EnterChatRoom = lazy(() => import("./pages/EnterInChatRoom"));
+const CreatedChatRoom = lazy(() => import("./components/CreatedChatroom"));
 
 const AppContent = () => {
   const navigate = useNavigate();
@@ -26,21 +27,13 @@ const AppContent = () => {
       location.pathname !== '/'
     ) {
       navigate('/login');
-    }
-    else if(
-      user && 
-      location.pathname == '/login' ||
-      location.pathname == '/signup'
-     ){
+    } else if (
+      user &&
+      (location.pathname === '/login' || location.pathname === '/signup')
+    ) {
       navigate('/');
-     }
+    }
   }, [location, navigate]);
-
-  const createRoom = async () => {
-    const response = await fetch("http://localhost:3000/create-room");
-    const data = await response.json();
-    navigate(`/chatroom/${data.roomId}`);
-  };
 
   return (
     <>
@@ -51,7 +44,8 @@ const AppContent = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/createChatRoomOptions" element={<CreateChatRoomOptions />} />
-        <Route path="/createChatRoom" element={<CreateChatRoom onCreateRoom={createRoom} />} />
+        <Route path="/createChatRoom" element={<CreateChatRoom  />} />
+        <Route path="/yourChatroomId" element={<CreatedChatRoom/>}/>
         <Route path="/enterChat" element={<EnterChatRoom />} />
       </Routes>
     </>

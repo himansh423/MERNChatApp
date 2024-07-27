@@ -21,7 +21,7 @@ const Login: React.FC = () => {
   };
 
   return (
-  
+   
 <main className="bg-black py-4 h-screen w-screen text-white">
 {error && <p>{error}</p>}
       <div className="flex justify-center flex-col">

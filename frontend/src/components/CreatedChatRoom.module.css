@@ -1,0 +1,12 @@
+.head {
+  font-size: 20px;
+  color: #ffffff;
+  font-family: "Bowlby One SC", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.SubmitButton {
+
+  background: linear-gradient(to right, #4a00e0, #8e2de2);
+}

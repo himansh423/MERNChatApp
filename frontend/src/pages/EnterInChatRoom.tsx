@@ -1,25 +1,38 @@
-
+import { useNavigate } from "react-router-dom";
 import styles from "./EnterInChatRoom.module.css";
+import { useRef } from "react";
 
 const EnterInChatRoom = () => {
+  const RoomIDref = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
+  const handleEnterChatroom = (e:any):any => {
+       e.preventDefault();
+       if(RoomIDref.current) {
+        const roomID = RoomIDref.current.value;
+          navigate(`/chatroom/${roomID}`);
+       }
+      
+  }
   return (
     <main className="bg-black py-4 h-screen w-screen text-white">
       <div>
-        <form className="flex flex-col items-center mt-7 px-5">
+        <form onSubmit={(e) => handleEnterChatroom(e)} className="flex flex-col items-center mt-7 px-5">
           <div className="flex flex-col gap-2 w-full ">
-            <label htmlFor="email" className="px-1">
+            <label htmlFor="chatid" className="px-1">
               Chatroom ID*
             </label>
             <input
-              type="email"
+              type="text"
               className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
-              name="email"
-              id="email"
+              name="text"
+              id="id"
+              required
+              ref={RoomIDref}
             />
           </div>
           <div className="flex flex-col gap-2 w-full  mt-4">
             <label htmlFor="password" className="px-1">
-             Chatroom Password*
+              Chatroom Password*
             </label>
             <input
               type="password"

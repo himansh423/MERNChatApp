@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password,userChatrooms } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -17,6 +17,7 @@ exports.register = async (req, res) => {
       username,
       email,
       password: hashedPassword,
+      userChatrooms:userChatrooms
     });
 
     await newUser.save();
@@ -48,3 +49,5 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
