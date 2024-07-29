@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
-  const { username, email, password,userChatrooms } = req.body;
+  const { username, email, password } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -17,16 +17,17 @@ exports.register = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      userChatrooms:userChatrooms
     });
 
     await newUser.save();
 
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
+    console.error(error); 
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
@@ -42,7 +43,7 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ id: user._id }, 'your_jwt_secret', { expiresIn: '2h' });
+    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '2h' });
 
     res.json({ token, userId: user._id, username: user.username, email: user.email });
   } catch (error) {
