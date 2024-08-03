@@ -8,7 +8,7 @@ const CreateChatRoom: React.FC = () => {
   const navigate = useNavigate();
   const createRoom = async (e: any) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:3000/create-room");
+    const response = await fetch("http://localhost:3000/api/create");
     const data = await response.json();
     const created = dispatch(
       CreatedChatRoomActions.ChatRoomCreated({ RoomID: data.roomId })
@@ -52,6 +52,34 @@ const CreateChatRoom: React.FC = () => {
               name="password"
               id="password"
               placeholder="Enter your Chatroom password"
+              autoComplete="off"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2 w-full  mt-6">
+            <label htmlFor="password" className="px-1">
+              User1*
+            </label>
+            <input
+              type="text"
+              className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
+              name="user1"
+              id="user1"
+              placeholder="Enter User1 name"
+              autoComplete="off"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2 w-full  mt-6">
+            <label htmlFor="password" className="px-1">
+             User2*
+            </label>
+            <input
+              type="text"
+              className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
+              name="user2"
+              id="user2"
+              placeholder="Enter User2 name"
               autoComplete="off"
             />
           </div>
