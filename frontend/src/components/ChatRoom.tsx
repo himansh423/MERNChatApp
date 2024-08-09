@@ -16,7 +16,13 @@ const ChatRoom: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    socket.current = io("http://localhost:3000");
+    const token = localStorage.getItem('chatToken');
+
+    socket.current = io("http://localhost:3000", {
+      auth: {
+        token,
+      },
+    });
 
     socket.current.on("connect", () => {
       console.log("Connected with ID: ", socket.current?.id);
@@ -32,6 +38,7 @@ const ChatRoom: React.FC = () => {
       socket.current?.disconnect();
     };
   }, [idofroom, dispatch]);
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

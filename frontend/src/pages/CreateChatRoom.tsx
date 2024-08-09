@@ -2,22 +2,51 @@ import styles from "./CreateChatRoom.module.css";
 import { useDispatch } from "react-redux";
 import { CreatedChatRoomActions } from "../store/createdChatroom";
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
+import { create } from "../utils/ChatAuthUtils";
+import axios from "axios";
 
 const CreateChatRoom: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const chatroomNameRef = useRef<HTMLInputElement | null >(null);
+  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const user1Ref = useRef<HTMLInputElement | null>(null);
+  const user2Ref = useRef<HTMLInputElement | null>(null);
+  
   const createRoom = async (e: any) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:3000/api/create");
-    const data = await response.json();
-    const created = dispatch(
-      CreatedChatRoomActions.ChatRoomCreated({ RoomID: data.roomId })
-    );
+  
+    try {
+      const chatroomName = chatroomNameRef.current?.value;
+      const chatroomPassword = passwordRef.current?.value;
+      console.log("Chatroom Name:", chatroomName);
+      console.log("Chatroom Password:", chatroomPassword);
+      const response = await axios.get("http://localhost:3000/create-room");
+      console.log("API Response:", response);
+      const chatroomId = response.data.roomId;
+      console.log("Chatroom ID:", chatroomId);
+      const chatroomParticipants = {
+        participant1: user1Ref.current?.value,
+        participant2: user2Ref.current?.value,
+      };
+      console.log("Participants:", chatroomParticipants);
+  
+      const createResponse = await create(chatroomName, chatroomId, chatroomPassword, chatroomParticipants);
+      console.log("Create Function Response:", createResponse.data);
+  
+      const created = dispatch(
+        CreatedChatRoomActions.ChatRoomCreated({ RoomID: chatroomId })
+      );
 
-    if (created) {
-      navigate(`/yourChatroomId`);
+      if (created) {
+        navigate(`/yourChatroomId`);
+      }
+    } catch (error) {
+      console.error("Error creating chatroom:", error);
     }
   };
+  
 
   return (
     <main className="bg-black py-4 h-[120vh] w-screen text-white">
@@ -34,6 +63,7 @@ const CreateChatRoom: React.FC = () => {
               Name of Chatroom*
             </label>
             <input
+              ref={chatroomNameRef}
               type="text"
               className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
               name="chatroomName"
@@ -47,6 +77,7 @@ const CreateChatRoom: React.FC = () => {
               Chatroom Password*
             </label>
             <input
+            ref={passwordRef}
               type="password"
               className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
               name="password"
@@ -61,6 +92,7 @@ const CreateChatRoom: React.FC = () => {
               User1*
             </label>
             <input
+            ref={user1Ref}
               type="text"
               className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
               name="user1"
@@ -75,6 +107,7 @@ const CreateChatRoom: React.FC = () => {
              User2*
             </label>
             <input
+            ref={user2Ref}
               type="text"
               className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
               name="user2"

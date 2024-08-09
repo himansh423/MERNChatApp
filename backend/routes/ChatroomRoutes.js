@@ -4,7 +4,7 @@ const verifyToken = require('../middleware/ChatAuthMiddleware');
 
 const router = express.Router();
 
-router.post('/create', verifyToken, create);
-router.post('/enter', verifyToken, enter);
+router.post('/create', create);
+router.post('/enter', enter);
 
 module.exports = router;

@@ -34,22 +34,21 @@ exports.enter = async (req, res) => {
   const { ChatroomId, password } = req.body;
 
   try {
-    const isChatRoom = await ChatRoom.findOne({ ChatroomId });
-    if (!isChatRoom) {
+    const chatRoom = await ChatRoom.findOne({ ChatroomId });
+    if (!chatRoom) {
       return res.status(400).json({ message: 'Chatroom not found' });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, chatRoom.password);
     if (!isPasswordValid) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '2h' });
+    const token = jwt.sign({ id: chatRoom._id }, process.env.CHATROOM_SECRET_KEY, { expiresIn: '2h' });
 
-    res.json({ token, defaultId: ChatRoom._id, ChatroomName: ChatRoom.ChatroomName, ChatroomId:ChatRoom.ChatroomId });
+    // Send the token back to the client
+    res.json({ token, chatRoom });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
-
