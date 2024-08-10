@@ -1,12 +1,13 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoSendSharp } from "react-icons/io5";
 import img from "../assets/chatlogo.png";
 import styles from "./ChatRoom.module.css";
 import { io, Socket } from "socket.io-client";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { messageAction } from "../store/message";
+import axios from "axios";
 
 const ChatRoom: React.FC = () => {
   const { idofroom } = useParams<{ idofroom: string }>();
@@ -14,9 +15,18 @@ const ChatRoom: React.FC = () => {
   const messages = useSelector((store: RootState) => store.message.messages);
   const messageRef = useRef<HTMLTextAreaElement | null>(null);
   const dispatch = useDispatch();
+  const [modal, setModals] = useState<boolean>(false);
+  const [chatRoomName, setChatRoomName] = useState<string>("");
+  const [participants, setParticipants] = useState<{
+    participant1: string;
+    participant2: string;
+  }>({ participant1: "", participant2: "" });
+  const [buffer, setBuffer] = useState<boolean>(false);
+  const [deleted, setDeleted] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('chatToken');
+    const token = localStorage.getItem("chatToken");
 
     socket.current = io("http://localhost:3000", {
       auth: {
@@ -34,11 +44,24 @@ const ChatRoom: React.FC = () => {
       dispatch(messageAction.messageReceived({ text: data }));
     });
 
+    const fetchChatRoomDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/api/chatroom/create/${idofroom}`
+        );
+        setChatRoomName(response.data.ChatroomName);
+        setParticipants(response.data.participants);
+      } catch (error) {
+        console.error("Error fetching chatroom details:", error);
+      }
+    };
+
+    fetchChatRoomDetails();
+
     return () => {
       socket.current?.disconnect();
     };
   }, [idofroom, dispatch]);
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,8 +74,81 @@ const ChatRoom: React.FC = () => {
     }
   };
 
+  const handleModal = () => {
+    setModals(true);
+  };
+
+  const handleCancel = () => {
+    setModals(false);
+  };
+
+  const handleDelete = async () => {
+    setBuffer(true);
+    try {
+      const response = await axios.delete(
+        `http://localhost:3000/api/chatroom/create/${idofroom}`
+      );
+
+      if (response.status === 200) {
+        setBuffer(false);
+        setDeleted(true);
+      }
+    } catch (error) {
+      console.error("Error deleting chatroom:", error);
+      setBuffer(false);
+    }
+  };
+
+  const handleNavigate = () => {
+    navigate("/");
+  };
+
   return (
     <div className="h-screen w-screen bg-[#141414] flex flex-col">
+      {buffer && (
+        <div>
+          <div className="h-screen w-screen absolute z-40 bg-white opacity-25"></div>
+          <div
+            className={`${styles.buffer} w-[100px] h-[100px] border-t-2 border-l-2 border-yellow-400 rounded-[50%] absolute z-50 top-[50%] translate-y-[-50%] left-[50%]`}
+          ></div>
+        </div>
+      )}
+
+      {modal && !deleted && (
+        <div className="h-[150px] rounded-md w-[250px] bg-yellow-400 text-white absolute z-40 top-28 left-[50%] py-5 px-5 translate-x-[-50%]">
+          <h1 className="text-center text-black font-semibold">
+            Do you really want to delete this Chatroom?
+          </h1>
+          <div className="flex gap-5 w-full justify-center mt-6">
+            <button onClick={handleCancel} className="h-10 bg-green-500 w-20">
+              Cancel
+            </button>
+            <button
+              onClick={handleDelete}
+              className="h-10 bg-red-600 w-20"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      )}
+
+      {deleted && (
+        <div className="h-[150px] rounded-md w-[250px] bg-yellow-400 text-white absolute z-40 top-28 left-[50%] py-5 px-5 translate-x-[-50%]">
+          <h1 className="text-center text-black font-semibold">
+            Chatroom Deleted Successfully!
+          </h1>
+          <div className="flex gap-5 w-full justify-center mt-6">
+            <button
+              onClick={handleNavigate}
+              className="h-10 bg-green-500 w-full"
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className={styles.header}>
         <div className="h-[37px] w-[37px] border">
           <img
@@ -62,10 +158,18 @@ const ChatRoom: React.FC = () => {
           />
         </div>
         <div>
-          <h1 className="text-[#BFBFBF]">Hello World</h1>
+          <h1 className="text-[#BFBFBF]">{chatRoomName}</h1>
           <div className="flex text-[10px] text-[#808080]">
-            <p>Participant1</p>,<p>Participant2</p>
+            <p>{participants.participant1}</p>,<p>{participants.participant2}</p>
           </div>
+        </div>
+        <div>
+          <button
+            onClick={handleModal}
+            className="absolute right-5 top-3 border border-yellow-500 bg-red-600 p-2 w-26 rounded-md font-semibold"
+          >
+            Delete
+          </button>
         </div>
       </div>
       <div className={styles.ChatContent}>

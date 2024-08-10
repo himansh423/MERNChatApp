@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { Route, BrowserRouter as Router, Routes, useNavigate, useLocation } from "react-router-dom";
 import { getUserData } from './utils/authUtils';
 import Burger from "./components/Burger";
+import ProtectedChatRoomRoute from "./components/ProtectedChatRoomRoute";
 
 const Navbar = lazy(() => import("./components/Header"));
 const HomeScreen = lazy(() => import("./pages/HomeScreen"));
@@ -17,7 +18,7 @@ const AppContent = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isChatRoom = location.pathname.startsWith("/chatroom");
-
+  const token = localStorage.getItem('chatToken');
   useEffect(() => {
     const user = getUserData();
     if (
@@ -35,12 +36,22 @@ const AppContent = () => {
     }
   }, [location, navigate]);
 
+
+
+
   return (
     <>
       {!isChatRoom && [<Navbar key="navbar" />, <Burger key="burger" />]}
       <Routes>
         <Route path="/" element={<HomeScreen />} />
-        <Route path="/chatroom/:idofroom" element={<ChatRoom />} />
+        <Route 
+          path="/chatroom/:idofroom" 
+          element={
+            <ProtectedChatRoomRoute>
+              <ChatRoom />
+            </ProtectedChatRoomRoute>
+          } 
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/createChatRoomOptions" element={<CreateChatRoomOptions />} />

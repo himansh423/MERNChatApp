@@ -21,6 +21,7 @@ const EnterInChatRoom = () => {
 
     try {
       const data = await enter(roomId, password);
+      console.log(data)
 
       if (data.token) {
         localStorage.setItem("chatToken", data.token);
