@@ -24,7 +24,6 @@ exports.register = async (req, res) => {
 
     await newUser.save();
 
-    // Send OTP via email
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -34,11 +33,23 @@ exports.register = async (req, res) => {
     });
     
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: `"Mystify Support" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: "Your OTP Code",
-      text: `Your OTP code is ${otp}`,
+      subject: "OTP from Mystify",
+      text: `Your OTP code is ${otp}, use it within 15 minutes.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+          <h2>OTP Verification</h2>
+          <p>Hello ${username},</p>
+          <p>Your OTP code is <strong>${otp}</strong>. Please use it within the next 15 minutes to verify your account.</p>
+          <p>If you did not request this OTP, please ignore this email.</p>
+          <br>
+          <p>Thanks,</p>
+          <p>The Mystify Team</p>
+        </div>
+      `
     };
+    
 
     const data = await transporter.sendMail(mailOptions);
     console.log(data)
@@ -62,7 +73,7 @@ exports.verifyOtp = async (req, res) => {
       return res.status(400).json({ message: "Invalid OTP" });
     }
 
-    user.otp = undefined; // Clear the OTP after successful verification
+    user.otp = undefined; 
     await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {

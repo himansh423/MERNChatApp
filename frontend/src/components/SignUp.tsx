@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { register, verifyOtp, storeUserData } from '../utils/authUtils';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { register, verifyOtp, storeUserData } from "../utils/authUtils";
 import styles from "./SignUp.module.css";
-import { FaGithub, FaGoogle } from 'react-icons/fa';
-
+import { FaRegEyeSlash } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
+import exampleImg from "../assets/exampleImg.jpg"
 const SignUp: React.FC = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [otp, setOtp] = useState('');
-  const [userId, setUserId] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [userId, setUserId] = useState("");
   const [showOtpInput, setShowOtpInput] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [type, setType] = useState("password");
   const navigate = useNavigate();
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -21,7 +23,7 @@ const SignUp: React.FC = () => {
       setUserId(response.userId);
       setShowOtpInput(true);
     } catch (err) {
-      setError('Registration failed');
+      setError("Registration failed");
     }
   };
 
@@ -30,18 +32,25 @@ const SignUp: React.FC = () => {
     try {
       const userData = await verifyOtp(userId, otp);
       storeUserData(userData);
-      navigate('/');
+      navigate("/");
     } catch (err) {
-      setError('OTP verification failed');
+      setError("OTP verification failed");
     }
   };
 
+  const handleShowPass = (arg: string) => {
+    if (arg === "show") {
+      setType("text");
+    } else if (arg === "hide") {
+      setType("password");
+    }
+  };
   return (
-    <main className="bg-black py-4 h-[120vh] w-screen text-white">
+    <main className="bg-black py-4 h-[190vh] w-screen text-white">
       {error && <p>{error}</p>}
       <div className="flex justify-center flex-col">
         <h1 className={`${styles.head} text-center font-bold`}>Sign up</h1>
-        <p className="text-center mt-2 text-gray-600 text-[13px]">
+        {/* <p className="text-center mt-2 text-gray-600 text-[13px]">
           Sign-up with One Of the Following options.
         </p>
         <div className="flex w-screen p-3 gap-3 mt-3">
@@ -55,17 +64,23 @@ const SignUp: React.FC = () => {
           >
             <FaGithub fontSize={30} />
           </button>
-        </div>
+        </div> */}
 
         {!showOtpInput ? (
-          <form onSubmit={handleSignUp} className="flex flex-col items-center mt-7 px-5">
+          <form
+            onSubmit={handleSignUp}
+            className="flex flex-col items-center mt-7 px-5"
+          >
             <div className="flex flex-col gap-2 w-full ">
-              <label htmlFor="name" className="px-1">Name*</label>
+              <label htmlFor="name" className="px-1">
+                Name*
+              </label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
+                placeholder="Enter your username..."
                 className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
                 name="name"
                 id="name"
@@ -73,10 +88,13 @@ const SignUp: React.FC = () => {
               />
             </div>
             <div className="flex flex-col gap-2 w-full mt-4">
-              <label htmlFor="email" className="px-1">Email*</label>
+              <label htmlFor="email" className="px-1">
+                Email*
+              </label>
               <input
                 type="email"
                 value={email}
+                placeholder="Enter valid Email address.."
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
@@ -86,50 +104,87 @@ const SignUp: React.FC = () => {
               />
             </div>
             <div className="flex flex-col gap-2 w-full mt-4">
-              <label htmlFor="password" className="px-1">Password*</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
-                name="password"
-                id="password"
-                autoComplete="off"
-              />
+              <label htmlFor="password" className="px-1">
+                Password*
+              </label>
+              <div className="relative">
+                {type === "password" ? (
+                  <div
+                    onClick={() => handleShowPass("show")}
+                    className="absolute right-3 z-10 top-[19px] text-[20px]"
+                  >
+                    <FaRegEyeSlash />
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => handleShowPass("hide")}
+                    className="absolute right-3 z-10 top-[19px] text-[20px]"
+                  >
+                    <FaEye />
+                  </div>
+                )}
+
+                <input
+                  type={type}
+                  value={password}
+                  placeholder="Enter your password"
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
+                  name="password"
+                  id="password"
+                  autoComplete="off"
+                />
+              </div>
             </div>
             <button
               type="submit"
-              className={`${styles.button} mt-7 w-full h-14 bg-gray-800 rounded-md text-white`}
+              className={`${styles.SubmitButton} mt-7 w-full h-14 bg-gray-800 rounded-md text-white`}
             >
               Sign Up
             </button>
           </form>
         ) : (
-          <form onSubmit={handleVerifyOtp} className="flex flex-col items-center mt-7 px-5">
-            <div className="flex flex-col gap-2 w-full">
-              <label htmlFor="otp" className="px-1">Enter OTP*</label>
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                required
-                className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
-                name="otp"
-                id="otp"
-                autoComplete="off"
-              />
-            </div>
-            <button
-              type="submit"
-              className={`${styles.button} mt-7 w-full h-14 bg-gray-800 rounded-md text-white`}
+          <div>
+            <h1 className=" text-center px-4 mt-4">OTP successfully sent to your email address!</h1>
+            <form
+              onSubmit={handleVerifyOtp}
+              className="flex flex-col items-center mt-7 px-5"
             >
-              Verify OTP
-            </button>
-          </form>
+              <div className="flex flex-col gap-2 w-full">
+                <label htmlFor="otp" className="px-1">
+                  Enter OTP*
+                </label>
+                <input
+                  type="text"
+                  value={otp}
+                  placeholder="Enter your 6 digit OTP"
+                  onChange={(e) => setOtp(e.target.value)}
+                  required
+                  className={`${styles.input} h-14 w-full border border-gray-400 bg-[#171717] px-3 py-2 rounded-md`}
+                  name="otp"
+                  id="otp"
+                  autoComplete="off"
+                />
+              </div>
+              <button
+                type="submit"
+                className={`${styles.SubmitButton} mt-7 w-full h-14 bg-gray-800 rounded-md text-white`}
+              >
+                Verify OTP
+              </button>
+            </form>
+            <div className="flex mt-5 flex-col items-center gap-4 px-4">
+              <h1>NOTE!!!!</h1>
+              <p className="text-center">in case of not receiving the email, check your email's <strong className="font-extrabold">spam</strong> folder</p>
+              <div >
+                <img className="h-[400px] w-[200px]" src={exampleImg} alt="" />
+              </div>
+            </div>
+          </div>
         )}
         <p className="text-center mt-6">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link to="/login" className="text-blue-500">
             Log In
           </Link>

@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Routes, useNavigate, useLocation } from
 import { getUserData } from './utils/authUtils';
 import Burger from "./components/Burger";
 import ProtectedChatRoomRoute from "./components/ProtectedChatRoomRoute";
+import Footer from "./components/Footer";
 
 const Navbar = lazy(() => import("./components/Header"));
 const HomeScreen = lazy(() => import("./pages/HomeScreen"));
@@ -18,7 +19,6 @@ const AppContent = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isChatRoom = location.pathname.startsWith("/chatroom");
-  const token = localStorage.getItem('chatToken');
   useEffect(() => {
     const user = getUserData();
     if (
@@ -59,6 +59,7 @@ const AppContent = () => {
         <Route path="/yourChatroomId" element={<CreatedChatRoom/>}/>
         <Route path="/enterChat" element={<EnterChatRoom />} />
       </Routes>
+      {!isChatRoom && [<Footer key="footer" />]}
     </>
   );
 };

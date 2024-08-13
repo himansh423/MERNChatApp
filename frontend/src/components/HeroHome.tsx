@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const HeroHome = () => {
   return (
     <main>
-      <div className="bg-black pt-5 h-screen w-screen flex flex-col items-center gap-3">
+      <div className="bg-black pt-5 h-[90vh] w-screen flex flex-col items-center gap-3">
         <h1 className={`${styles.head} text-center px-5`}>
           CREATE YOUR PRIVATE CHATROOM
         </h1>
