@@ -24,7 +24,7 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 
-const dbURI = process.env.MONGODB_URI;
+const dbURI = process.env.MONGO_URI;
 mongoose
   .connect(dbURI, {
     useNewUrlParser: true,
