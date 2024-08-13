@@ -15,6 +15,8 @@ const ChatRoom: React.FC = () => {
   const socket = useRef<Socket | null>(null);
   const messages = useSelector((store: RootState) => store.message.messages);
   const messageRef = useRef<HTMLTextAreaElement | null>(null);
+  const chatContentRef = useRef<HTMLDivElement | null>(null);
+  const inputContainerRef = useRef<HTMLFormElement | null>(null);
   const dispatch = useDispatch();
   const [modal, setModals] = useState<boolean>(false);
   const [chatRoomName, setChatRoomName] = useState<string>("");
@@ -43,6 +45,7 @@ const ChatRoom: React.FC = () => {
     socket.current.on("receive-message", (data: string) => {
       console.log("Message received: ", data);
       dispatch(messageAction.messageReceived({ text: data }));
+      scrollToBottom(); // Scroll to the bottom when a new message is received
     });
 
     const fetchChatRoomDetails = async () => {
@@ -64,6 +67,46 @@ const ChatRoom: React.FC = () => {
     };
   }, [idofroom, dispatch]);
 
+  // Adjust input container position and scroll chat content on mobile keyboard open/close
+  useEffect(() => {
+    const handleFocus = () => {
+      if (inputContainerRef.current) {
+        inputContainerRef.current.style.bottom = "300px"; // Adjust this value as needed
+      }
+      scrollToBottom();
+    };
+
+    const handleBlur = () => {
+      if (inputContainerRef.current) {
+        inputContainerRef.current.style.bottom = "0px";
+      }
+    };
+
+    const inputElement = messageRef.current;
+
+    if (inputElement) {
+      inputElement.addEventListener("focus", handleFocus);
+      inputElement.addEventListener("blur", handleBlur);
+    }
+
+    return () => {
+      if (inputElement) {
+        inputElement.removeEventListener("focus", handleFocus);
+        inputElement.removeEventListener("blur", handleBlur);
+      }
+    };
+  }, []);
+
+  const scrollToBottom = () => {
+    if (chatContentRef.current) {
+      chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom(); // Scroll to bottom on initial render
+  }, [messages]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (messageRef.current) {
@@ -72,6 +115,7 @@ const ChatRoom: React.FC = () => {
       socket.current?.emit("message", { roomId: idofroom, message });
       dispatch(messageAction.messageSent({ text: message }));
       messageRef.current.value = "";
+      scrollToBottom();
     }
   };
 
@@ -106,9 +150,7 @@ const ChatRoom: React.FC = () => {
 
   return (
     <div className="h-screen w-screen bg-[#141414] flex flex-col">
-      {buffer && (
-        <Loading/>
-      )}
+      {buffer && <Loading />}
 
       {modal && !deleted && (
         <div className="h-[150px] rounded-md w-[250px] bg-yellow-400 text-white absolute z-40 top-28 left-[50%] py-5 px-5 translate-x-[-50%]">
@@ -119,10 +161,7 @@ const ChatRoom: React.FC = () => {
             <button onClick={handleCancel} className="h-10 bg-green-500 w-20">
               Cancel
             </button>
-            <button
-              onClick={handleDelete}
-              className="h-10 bg-red-600 w-20"
-            >
+            <button onClick={handleDelete} className="h-10 bg-red-600 w-20">
               Confirm
             </button>
           </div>
@@ -135,10 +174,7 @@ const ChatRoom: React.FC = () => {
             Chatroom Deleted Successfully!
           </h1>
           <div className="flex gap-5 w-full justify-center mt-6">
-            <button
-              onClick={handleNavigate}
-              className="h-10 bg-green-500 w-full"
-            >
+            <button onClick={handleNavigate} className="h-10 bg-green-500 w-full">
               Go to Dashboard
             </button>
           </div>
@@ -168,7 +204,8 @@ const ChatRoom: React.FC = () => {
           </button>
         </div>
       </div>
-      <div className={styles.ChatContent}>
+
+      <div ref={chatContentRef} className={`${styles.ChatContent} overflow-y-auto`}>
         {messages
           .slice()
           .reverse()
@@ -184,7 +221,8 @@ const ChatRoom: React.FC = () => {
             </div>
           ))}
       </div>
-      <form onSubmit={handleSubmit} className={styles.inputContainer}>
+
+      <form onSubmit={handleSubmit} ref={inputContainerRef} className={styles.inputContainer}>
         <textarea
           placeholder="Type a Reply..."
           className="text-[#808080] text-wrap"
