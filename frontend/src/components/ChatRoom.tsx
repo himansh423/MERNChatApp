@@ -26,7 +26,6 @@ const ChatRoom: React.FC = () => {
   const [deleted, setDeleted] = useState<boolean>(false);
   const navigate = useNavigate();
   const [inputContainerBottom, setInputContainerBottom] = useState(0);
-  const [typingStatus, setTypingStatus] = useState<string>("");
 
   useEffect(() => {
     const token = localStorage.getItem("chatToken");
@@ -45,14 +44,6 @@ const ChatRoom: React.FC = () => {
     socket.current.on("receive-message", (data: string) => {
       console.log("Message received: ", data);
       dispatch(messageAction.messageReceived({ text: data }));
-    });
-
-    socket.current.on("user-typing", (data) => {
-      setTypingStatus(`${data.userId} is typing...`);
-    });
-
-    socket.current.on("user-stopped-typing", () => {
-      setTypingStatus("");
     });
 
     const fetchChatRoomDetails = async () => {
@@ -100,18 +91,6 @@ const ChatRoom: React.FC = () => {
     };
   }, [idofroom, dispatch]);
 
-  const handleTyping = () => {
-    if (socket.current) {
-      socket.current.emit("typing", { roomId: idofroom });
-    }
-  };
-
-  const handleStopTyping = () => {
-    if (socket.current) {
-      socket.current.emit("stop typing", { roomId: idofroom });
-    }
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (messageRef.current) {
@@ -120,7 +99,6 @@ const ChatRoom: React.FC = () => {
       socket.current?.emit("message", { roomId: idofroom, message });
       dispatch(messageAction.messageSent({ text: message }));
       messageRef.current.value = "";
-      handleStopTyping();
     }
   };
 
@@ -227,7 +205,6 @@ const ChatRoom: React.FC = () => {
               </div>
             </div>
           ))}
-          {typingStatus && <p className="text-[#808080]">{typingStatus}</p>}
       </div>
       <form
         onSubmit={handleSubmit}
@@ -239,8 +216,6 @@ const ChatRoom: React.FC = () => {
           className="text-[#808080] text-wrap"
           style={{ border: "1px solid grey" }}
           ref={messageRef}
-          onInput={handleTyping}
-          onBlur={handleStopTyping}
         />
         <button type="submit">
           <div>

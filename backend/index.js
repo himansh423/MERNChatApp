@@ -79,14 +79,6 @@ io.on("connection", (socket) => {
     console.log(`User joined room ${room}`);
   });
 
-  socket.on("typing", (data) => {
-    socket.to(data.roomId).emit("user-typing", { userId: socket.userId });
-  });
-
-  socket.on("stop typing", (data) => {
-    socket.to(data.roomId).emit("user-stopped-typing", { userId: socket.userId });
-  });
-
   socket.on("disconnect", () => {
     console.log("User disconnected", socket.id);
   });
