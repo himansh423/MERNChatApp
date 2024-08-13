@@ -3,8 +3,8 @@ import logo from "../assets/chatlogo.png"
 const Footer = () => {
   return (
     <footer>
-      <div className="bg-black flex py-7 px-8 pr-12 gap-7 flex-col text-white h-[400px] w-screen ">
-        <div className="flex justify-between">
+      <div className="bg-black flex py-7 px-8 pr-12 gap-7 flex-col text-white h-[400px] w-screen  ">
+        <div className="flex justify-between sm:justify-evenly">
             <div className="flex text-[18px] flex-col gap-2">
               <h1 className="text-[20px] text-gray-500">Sitemap</h1>
               <a href="">Create</a>

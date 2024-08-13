@@ -10,7 +10,7 @@ const Header = () => {
   };
   return (
     <nav className="bg-black">
-      <div className="flex  justify-between items-center px-3 pr-5 pt-3">
+      <div className="flex  justify-between items-center px-3 sm:px-7 pr-5 pt-3">
         <div>
           <img src={logo} className="h-16 w-16 filter invert" alt="" />
         </div>

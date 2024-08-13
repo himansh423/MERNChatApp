@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { messageAction } from "../store/message";
 import axios from "axios";
+import Loading from "./Loading";
 
 const ChatRoom: React.FC = () => {
   const { idofroom } = useParams<{ idofroom: string }>();
@@ -106,12 +107,7 @@ const ChatRoom: React.FC = () => {
   return (
     <div className="h-screen w-screen bg-[#141414] flex flex-col">
       {buffer && (
-        <div>
-          <div className="h-screen w-screen absolute z-40 bg-white opacity-25"></div>
-          <div
-            className={`${styles.buffer} w-[100px] h-[100px] border-t-2 border-l-2 border-yellow-400 rounded-[50%] absolute z-50 top-[50%] translate-y-[-50%] left-[50%]`}
-          ></div>
-        </div>
+        <Loading/>
       )}
 
       {modal && !deleted && (

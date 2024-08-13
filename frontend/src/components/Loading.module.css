@@ -1,0 +1,13 @@
+.buffer {
+  animation: buffer 1s infinite linear;
+
+}
+
+@keyframes buffer {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
