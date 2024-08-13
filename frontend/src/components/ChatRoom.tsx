@@ -31,7 +31,7 @@ const ChatRoom: React.FC = () => {
   useEffect(() => {
     const token = localStorage.getItem("chatToken");
 
-    socket.current = io("http://localhost:3000", {
+    socket.current = io("https://chat-app-backend-tau-five.vercel.app", {
       auth: {
         token,
       },
@@ -51,7 +51,7 @@ const ChatRoom: React.FC = () => {
     const fetchChatRoomDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/chatroom/create/${idofroom}`
+          `https://chat-app-backend-tau-five.vercel.app/api/chatroom/create/${idofroom}`
         );
         setChatRoomName(response.data.ChatroomName);
         setParticipants(response.data.participants);
@@ -131,7 +131,7 @@ const ChatRoom: React.FC = () => {
     setBuffer(true);
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/chatroom/create/${idofroom}`
+        `https://chat-app-backend-tau-five.vercel.app/api/chatroom/create/${idofroom}`
       );
 
       if (response.status === 200) {
