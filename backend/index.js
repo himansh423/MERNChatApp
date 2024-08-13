@@ -15,7 +15,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://mystify-indol.vercel.app",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -77,6 +77,14 @@ io.on("connection", (socket) => {
   socket.on("join-room", (room) => {
     socket.join(room);
     console.log(`User joined room ${room}`);
+  });
+
+  socket.on("typing", (data) => {
+    socket.to(data.roomId).emit("user-typing", { userId: socket.userId });
+  });
+
+  socket.on("stop typing", (data) => {
+    socket.to(data.roomId).emit("user-stopped-typing", { userId: socket.userId });
   });
 
   socket.on("disconnect", () => {
