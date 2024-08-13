@@ -15,8 +15,6 @@ const ChatRoom: React.FC = () => {
   const socket = useRef<Socket | null>(null);
   const messages = useSelector((store: RootState) => store.message.messages);
   const messageRef = useRef<HTMLTextAreaElement | null>(null);
-  const chatContentRef = useRef<HTMLDivElement | null>(null);
-  const inputContainerRef = useRef<HTMLFormElement | null>(null);
   const dispatch = useDispatch();
   const [modal, setModals] = useState<boolean>(false);
   const [chatRoomName, setChatRoomName] = useState<string>("");
@@ -27,11 +25,12 @@ const ChatRoom: React.FC = () => {
   const [buffer, setBuffer] = useState<boolean>(false);
   const [deleted, setDeleted] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [inputContainerBottom, setInputContainerBottom] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem("chatToken");
 
-    socket.current = io("https://chat-app-backend-tau-five.vercel.app", {
+    socket.current = io("http://localhost:3000", {
       auth: {
         token,
       },
@@ -45,13 +44,12 @@ const ChatRoom: React.FC = () => {
     socket.current.on("receive-message", (data: string) => {
       console.log("Message received: ", data);
       dispatch(messageAction.messageReceived({ text: data }));
-      scrollToBottom(); // Scroll to the bottom when a new message is received
     });
 
     const fetchChatRoomDetails = async () => {
       try {
         const response = await axios.get(
-          `https://chat-app-backend-tau-five.vercel.app/api/chatroom/create/${idofroom}`
+          `http://localhost:3000/api/chatroom/create/${idofroom}`
         );
         setChatRoomName(response.data.ChatroomName);
         setParticipants(response.data.participants);
@@ -62,50 +60,36 @@ const ChatRoom: React.FC = () => {
 
     fetchChatRoomDetails();
 
-    return () => {
-      socket.current?.disconnect();
-    };
-  }, [idofroom, dispatch]);
+    const adjustHeight = () => {
+      const viewportHeight = window.innerHeight;
+      const documentHeight = document.documentElement.clientHeight;
 
-  // Adjust input container position and scroll chat content on mobile keyboard open/close
-  useEffect(() => {
-    const handleFocus = () => {
-      if (inputContainerRef.current) {
-        inputContainerRef.current.style.bottom = "300px"; // Adjust this value as needed
+      if (viewportHeight < documentHeight) {
+        setInputContainerBottom(documentHeight - viewportHeight);
+      } else {
+        setInputContainerBottom(0);
       }
-      scrollToBottom();
+    };
+
+    const handleFocus = () => {
+      setTimeout(adjustHeight, 300);
     };
 
     const handleBlur = () => {
-      if (inputContainerRef.current) {
-        inputContainerRef.current.style.bottom = "0px";
-      }
+      setTimeout(adjustHeight, 300);
     };
 
-    const inputElement = messageRef.current;
-
-    if (inputElement) {
-      inputElement.addEventListener("focus", handleFocus);
-      inputElement.addEventListener("blur", handleBlur);
-    }
+    window.addEventListener("resize", adjustHeight);
+    window.addEventListener("focusin", handleFocus);
+    window.addEventListener("focusout", handleBlur);
 
     return () => {
-      if (inputElement) {
-        inputElement.removeEventListener("focus", handleFocus);
-        inputElement.removeEventListener("blur", handleBlur);
-      }
+      window.removeEventListener("resize", adjustHeight);
+      window.removeEventListener("focusin", handleFocus);
+      window.removeEventListener("focusout", handleBlur);
+      socket.current?.disconnect();
     };
-  }, []);
-
-  const scrollToBottom = () => {
-    if (chatContentRef.current) {
-      chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
-    }
-  };
-
-  useEffect(() => {
-    scrollToBottom(); // Scroll to bottom on initial render
-  }, [messages]);
+  }, [idofroom, dispatch]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,7 +99,6 @@ const ChatRoom: React.FC = () => {
       socket.current?.emit("message", { roomId: idofroom, message });
       dispatch(messageAction.messageSent({ text: message }));
       messageRef.current.value = "";
-      scrollToBottom();
     }
   };
 
@@ -174,7 +157,10 @@ const ChatRoom: React.FC = () => {
             Chatroom Deleted Successfully!
           </h1>
           <div className="flex gap-5 w-full justify-center mt-6">
-            <button onClick={handleNavigate} className="h-10 bg-green-500 w-full">
+            <button
+              onClick={handleNavigate}
+              className="h-10 bg-green-500 w-full"
+            >
               Go to Dashboard
             </button>
           </div>
@@ -204,8 +190,7 @@ const ChatRoom: React.FC = () => {
           </button>
         </div>
       </div>
-
-      <div ref={chatContentRef} className={`${styles.ChatContent} overflow-y-auto`}>
+      <div className={`${styles.ChatContent}`}>
         {messages
           .slice()
           .reverse()
@@ -221,8 +206,11 @@ const ChatRoom: React.FC = () => {
             </div>
           ))}
       </div>
-
-      <form onSubmit={handleSubmit} ref={inputContainerRef} className={styles.inputContainer}>
+      <form
+        onSubmit={handleSubmit}
+        className={styles.inputContainer}
+        style={{ bottom: `${inputContainerBottom}px` }}
+      >
         <textarea
           placeholder="Type a Reply..."
           className="text-[#808080] text-wrap"
