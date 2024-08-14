@@ -53,7 +53,7 @@ app.get("/create-room", (req, res) => {
 
 // Socket.IO Authentication Middleware
 io.use((socket, next) => {
-  const token = socket.handshake.auth.token; // Expect token in auth field
+  const token = socket.handshake.auth.token; 
   if (!token) {
     return next(new Error('Authentication error: No token provided'));
   }

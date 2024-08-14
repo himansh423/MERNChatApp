@@ -29,6 +29,12 @@ const ChatRoom: React.FC = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("chatToken");
+    if(!token) {
+      console.log("token not found")
+    }else {
+      console.log(token)
+    }
+   
 
     socket.current = io("https://chat-app-backend-tau-five.vercel.app", {
       auth: {
