@@ -9,6 +9,7 @@ const authRoutes = require("./routes/authRoutes");
 const chatroomRoutes = require("./routes/ChatroomRoutes");
 const jwt = require('jsonwebtoken');
 
+app.use(cors());
 const app = express();
 const port = 3000;
 const server = http.createServer(app);
@@ -21,7 +22,7 @@ const io = new Server(server, {
   },
 });
 
-app.use(cors());
+
 app.use(express.json());
 
 const dbURI = process.env.MONGO_URI;
