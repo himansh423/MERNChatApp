@@ -15,6 +15,7 @@ const port = 3000;
 const server = http.createServer(app);
 
 const io = new Server(server, {
+  path: "/socket.io",
   cors: {
     origin: "https://mystify-indol.vercel.app",
     methods: ["GET", "POST"],

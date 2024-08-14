@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://chat-app-backend-tau-five.vercel.app/api/chatroom';
+const API_URL = 'http://localhost:3000/api/chatroom';
 
 export const create = async (ChatroomName: any, ChatroomId: any, password: any,participants:any) => {
   const response = await axios.post(`${API_URL}/create`, { ChatroomName, ChatroomId, password,participants });
