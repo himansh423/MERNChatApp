@@ -20,9 +20,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
     credentials: true,
   },
-  transports: ["websocket"], // Force WebSocket only
 });
-
 
 app.use(cors());
 app.use(express.json());
