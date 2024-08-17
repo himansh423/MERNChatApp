@@ -87,13 +87,13 @@ io.on("connection", (socket) => {
     console.log(`User joined room ${room}`);
   });
 
- socket.on("user-typing", ({ roomId }) => {
-  socket.to(roomId).emit("user-typing", socket.id);
-});
+  socket.on("user-typing", ({ roomId }) => {
+    socket.broadcast.to(roomId).emit("user-typing");
+  });
 
-socket.on("stop-typing", (roomId) => {
-  socket.to(roomId).emit("stop-typing", socket.id);
-});
+  socket.on("stop-typing", (roomId) => {
+    socket.broadcast.to(roomId).emit("stop-typing");
+  });
 
   socket.on("disconnect", () => {
     console.log("User disconnected", socket.id);
