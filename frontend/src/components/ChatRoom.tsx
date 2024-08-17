@@ -10,7 +10,7 @@ import { RootState } from "../store";
 import { messageAction } from "../store/message";
 import axios from "axios";
 import Loading from "./Loading";
-import { debounce } from "lodash";
+import { debounce } from 'lodash';
 
 const ChatRoom: React.FC = () => {
   const { idofroom } = useParams<{ idofroom: string }>();
@@ -32,11 +32,17 @@ const ChatRoom: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleTyping = () => {
-    socket.current?.emit("user-typing", idofroom);
+    if (!typingStatus) {
+      setTypingStatus(true);
+      socket.current?.emit("user-typing", { roomId: idofroom });
+    }
   };
-  
+
   const handleStopTyping = () => {
-    socket.current?.emit("stop-typing", idofroom);
+    if (typingStatus) {
+      setTypingStatus(false);
+      socket.current?.emit("stop-typing", idofroom);
+    }
   };
 
   const debouncedHandleTyping = debounce(handleTyping, 300);
@@ -56,25 +62,23 @@ const ChatRoom: React.FC = () => {
       },
     });
 
+    socket.current.on("connect", () => {
+      console.log("Connected with ID: ", socket.current?.id);
+      socket.current?.emit("join-room", idofroom);
+    });
 
     socket.current?.on("user-typing", () => {
       setTypingStatus(true);
     });
-  
-    // Listen for the "stop-typing" event from the server
+
     socket.current?.on("stop-typing", () => {
       setTypingStatus(false);
     });
 
-    socket.current.on(
-      "receive-message",
-      (data: { message: string; type: "text" | "image" }) => {
-        console.log("Message received: ", data);
-        dispatch(
-          messageAction.messageReceived({ text: data.message, type: data.type })
-        );
-      }
-    );
+    socket.current.on("receive-message", (data: { message: string, type: "text" | "image" }) => {
+      console.log("Message received: ", data);
+      dispatch(messageAction.messageReceived({ text: data.message, type: data.type }));
+    });
 
     const fetchChatRoomDetails = async () => {
       try {
@@ -115,8 +119,6 @@ const ChatRoom: React.FC = () => {
       window.removeEventListener("resize", adjustHeight);
       window.removeEventListener("focusin", handleFocus);
       window.removeEventListener("focusout", handleBlur);
-      socket.current?.off("user-typing");
-      socket.current?.off("stop-typing");
       socket.current?.disconnect();
     };
   }, [idofroom, dispatch]);
@@ -126,11 +128,7 @@ const ChatRoom: React.FC = () => {
     if (messageRef.current) {
       const message = messageRef.current.value;
       console.log("Sending message: ", message);
-      socket.current?.emit("message", {
-        roomId: idofroom,
-        message,
-        type: "text",
-      });
+      socket.current?.emit("message", { roomId: idofroom, message, type: "text" });
       dispatch(messageAction.messageSent({ text: message, type: "text" }));
       messageRef.current.value = "";
     }
@@ -142,11 +140,7 @@ const ChatRoom: React.FC = () => {
       const reader = new FileReader();
       reader.onload = (event) => {
         const imageData = event.target?.result as string;
-        socket.current?.emit("message", {
-          roomId: idofroom,
-          message: imageData,
-          type: "image",
-        });
+        socket.current?.emit("message", { roomId: idofroom, message: imageData, type: "image" });
         dispatch(messageAction.messageSent({ text: imageData, type: "image" }));
       };
       reader.readAsDataURL(file);
@@ -260,11 +254,7 @@ const ChatRoom: React.FC = () => {
                 {message.contentType === "text" ? (
                   <p className="text">{message.text}</p>
                 ) : (
-                  <img
-                    src={message.text}
-                    alt="Shared image"
-                    className="max-w-full h-auto"
-                  />
+                  <img src={message.text} alt="Shared image" className="max-w-full h-auto" />
                 )}
               </div>
             </div>
@@ -290,7 +280,7 @@ const ChatRoom: React.FC = () => {
         <input
           type="file"
           ref={fileInputRef}
-          style={{ display: "none" }}
+          style={{ display: 'none' }}
           onChange={handleImageUpload}
           accept="image/*"
         />
