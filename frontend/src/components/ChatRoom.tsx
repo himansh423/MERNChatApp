@@ -56,7 +56,7 @@ const ChatRoom: React.FC = () => {
       console.log(token);
     }
 
-    socket.current = io("http://localhost:3000", {
+    socket.current = io("", {
       auth: {
         token,
       },
