@@ -87,13 +87,15 @@ io.on("connection", (socket) => {
     console.log(`User joined room ${room}`);
   });
 
-  socket.on("user-typing", ({ roomId }) => {
-    socket.broadcast.to(roomId).emit("user-typing");
+  socket.on("user-typing", (roomId) => {
+    socket.to(roomId).emit("user-typing");
   });
-
+  
+  // Listen for stop-typing event and broadcast to other users in the room
   socket.on("stop-typing", (roomId) => {
-    socket.broadcast.to(roomId).emit("stop-typing");
+    socket.to(roomId).emit("stop-typing");
   });
+  
 
   socket.on("disconnect", () => {
     console.log("User disconnected", socket.id);
