@@ -248,7 +248,7 @@ const ChatRoom: React.FC = () => {
           className="text-[#808080] text-wrap"
           style={{ border: "1px solid grey" }}
           ref={messageRef}
-          onInput={debouncedHandleTyping}
+          onChange={debouncedHandleTyping}
           onBlur={debouncedHandleStopTyping}
           required
         />
