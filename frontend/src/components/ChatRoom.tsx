@@ -26,15 +26,25 @@ const ChatRoom: React.FC = () => {
   const [deleted, setDeleted] = useState<boolean>(false);
   const navigate = useNavigate();
   const [inputContainerBottom, setInputContainerBottom] = useState(0);
+  const [typingStatus, setTypingStatus] = useState<boolean>(false);
+
+  const handleTyping = () => {
+    socket.current?.emit("user-typing", { roomId: idofroom });
+    dispatch(messageAction.messageReceived({ text: "typing....." }));
+  };
+
+  const handleStopTyping = () => {
+    socket.current?.emit("stop-typing", idofroom);
+    dispatch(messageAction.messageTypingStop());
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("chatToken");
-    if(!token) {
-      console.log("token not found")
-    }else {
-      console.log(token)
+    if (!token) {
+      console.log("token not found");
+    } else {
+      console.log(token);
     }
-   
 
     socket.current = io("", {
       auth: {
@@ -47,6 +57,14 @@ const ChatRoom: React.FC = () => {
       socket.current?.emit("join-room", idofroom);
     });
 
+    socket.current?.on("user-typing", () => {
+      setTypingStatus(true);
+    });
+
+    socket.current?.on("stop-typing", () => {
+      setTypingStatus(false);
+    });
+
     socket.current.on("receive-message", (data: string) => {
       console.log("Message received: ", data);
       dispatch(messageAction.messageReceived({ text: data }));
@@ -54,9 +72,7 @@ const ChatRoom: React.FC = () => {
 
     const fetchChatRoomDetails = async () => {
       try {
-        const response = await axios.get(
-          `/api/chatroom/create/${idofroom}`
-        );
+        const response = await axios.get(`/api/chatroom/create/${idofroom}`);
         setChatRoomName(response.data.ChatroomName);
         setParticipants(response.data.participants);
       } catch (error) {
@@ -119,9 +135,7 @@ const ChatRoom: React.FC = () => {
   const handleDelete = async () => {
     setBuffer(true);
     try {
-      const response = await axios.delete(
-        `/api/chatroom/create/${idofroom}`
-      );
+      const response = await axios.delete(`/api/chatroom/create/${idofroom}`);
 
       if (response.status === 200) {
         setBuffer(false);
@@ -140,6 +154,7 @@ const ChatRoom: React.FC = () => {
   return (
     <div className="h-screen w-screen bg-[#141414] flex flex-col">
       {buffer && <Loading />}
+
 
       {modal && !deleted && (
         <div className="h-[150px] rounded-md w-[250px] bg-yellow-400 text-white absolute z-40 top-28 left-[50%] py-5 px-5 translate-x-[-50%]">
@@ -172,7 +187,6 @@ const ChatRoom: React.FC = () => {
           </div>
         </div>
       )}
-
       <div className={styles.header}>
         <div className="h-[37px] w-[37px] border">
           <img
@@ -184,7 +198,8 @@ const ChatRoom: React.FC = () => {
         <div>
           <h1 className="text-[#BFBFBF]">{chatRoomName}</h1>
           <div className="flex text-[10px] text-[#808080]">
-            <p>{participants.participant1}</p>,<p>{participants.participant2}</p>
+            <p>{participants.participant1}</p>,
+            <p>{participants.participant2}</p>
           </div>
         </div>
         <div>
@@ -222,6 +237,9 @@ const ChatRoom: React.FC = () => {
           className="text-[#808080] text-wrap"
           style={{ border: "1px solid grey" }}
           ref={messageRef}
+          onKeyPress={handleTyping}
+          onBlur={handleStopTyping}
+          required
         />
         <button type="submit">
           <div>
