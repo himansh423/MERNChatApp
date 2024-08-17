@@ -8,15 +8,17 @@ const { v4: uuidv4 } = require("uuid");
 const authRoutes = require("./routes/authRoutes");
 const chatroomRoutes = require("./routes/ChatroomRoutes");
 const jwt = require('jsonwebtoken');
-
+const path = require("path");
 
 const app = express();
 const port = 3000;
 const server = http.createServer(app);
 
+const __dirname1 = path.resolve();
+
 const io = new Server(server, {
   cors: {
-    origin: "https://mystify-indol.vercel.app",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -42,14 +44,21 @@ mongoose
 app.use("/api/auth", authRoutes);
 app.use("/api/chatroom", chatroomRoutes);
 
-app.get("/", (req, res) => {
-  res.send("Hello world");
-});
-
 app.get("/create-room", (req, res) => {
   const roomId = uuidv4();
   res.json({ roomId });
 });
+
+// Deployment Section /////////////////
+
+app.use(express.static(path.join(__dirname1, "../frontend/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname1, "../frontend/dist/index.html"));
+});
+
+
+// Deployment Section /////////////////
 
 // Socket.IO Authentication Middleware
 io.use((socket, next) => {

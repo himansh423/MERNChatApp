@@ -26,7 +26,7 @@ const CreateChatRoom: React.FC = () => {
       console.log("Chatroom Name:", chatroomName);
       console.log("Chatroom Password:", chatroomPassword);
       
-      const response = await axios.get("http://localhost:3000/create-room");
+      const response = await axios.get("/create-room");
       console.log("API Response:", response);
       const chatroomId = response.data.roomId;
       console.log("Chatroom ID:", chatroomId);

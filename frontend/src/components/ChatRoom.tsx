@@ -36,7 +36,7 @@ const ChatRoom: React.FC = () => {
     }
    
 
-    socket.current = io("https://mern-chat-app-back.vercel.app", {
+    socket.current = io("", {
       auth: {
         token,
       },
@@ -55,7 +55,7 @@ const ChatRoom: React.FC = () => {
     const fetchChatRoomDetails = async () => {
       try {
         const response = await axios.get(
-          `https://mern-chat-app-back.vercel.app/api/chatroom/create/${idofroom}`
+          `/api/chatroom/create/${idofroom}`
         );
         setChatRoomName(response.data.ChatroomName);
         setParticipants(response.data.participants);
@@ -120,7 +120,7 @@ const ChatRoom: React.FC = () => {
     setBuffer(true);
     try {
       const response = await axios.delete(
-        `https://mern-chat-app-back.vercel.app/api/chatroom/create/${idofroom}`
+        `/api/chatroom/create/${idofroom}`
       );
 
       if (response.status === 200) {
