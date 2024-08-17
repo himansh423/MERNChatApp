@@ -26,16 +26,13 @@ const ChatRoom: React.FC = () => {
   const [deleted, setDeleted] = useState<boolean>(false);
   const navigate = useNavigate();
   const [inputContainerBottom, setInputContainerBottom] = useState(0);
-  const [typingStatus, setTypingStatus] = useState<boolean>(false);
 
   const handleTyping = () => {
     socket.current?.emit("user-typing", { roomId: idofroom });
-    dispatch(messageAction.messageReceived({ text: "typing....." }));
   };
 
   const handleStopTyping = () => {
     socket.current?.emit("stop-typing", idofroom);
-    dispatch(messageAction.messageTypingStop());
   };
 
   useEffect(() => {
@@ -58,11 +55,11 @@ const ChatRoom: React.FC = () => {
     });
 
     socket.current?.on("user-typing", () => {
-      setTypingStatus(true);
+      dispatch(messageAction.messageReceived({ text: "typing....." }));
     });
 
     socket.current?.on("stop-typing", () => {
-      setTypingStatus(false);
+      dispatch(messageAction.messageTypingStop());
     });
 
     socket.current.on("receive-message", (data: string) => {
@@ -155,7 +152,6 @@ const ChatRoom: React.FC = () => {
     <div className="h-screen w-screen bg-[#141414] flex flex-col">
       {buffer && <Loading />}
 
-
       {modal && !deleted && (
         <div className="h-[150px] rounded-md w-[250px] bg-yellow-400 text-white absolute z-40 top-28 left-[50%] py-5 px-5 translate-x-[-50%]">
           <h1 className="text-center text-black font-semibold">
@@ -226,6 +222,13 @@ const ChatRoom: React.FC = () => {
               </div>
             </div>
           ))}
+        {/* {typingStatus && (
+          <div className="flex gap-5 flex-col justify-end">
+            <div className={styles.reciever}>
+              <p className="text-white">typing....</p>
+            </div>
+          </div>
+        )} */}
       </div>
       <form
         onSubmit={handleSubmit}
