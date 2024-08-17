@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IoSendSharp } from "react-icons/io5";
+import { IoMdImage } from "react-icons/io";
 import img from "../assets/chatlogo.png";
 import styles from "./ChatRoom.module.css";
 import { io, Socket } from "socket.io-client";
@@ -28,6 +29,7 @@ const ChatRoom: React.FC = () => {
   const navigate = useNavigate();
   const [inputContainerBottom, setInputContainerBottom] = useState(0);
   const [typingStatus, setTypingStatus] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleTyping = () => {
     if (!typingStatus) {
@@ -43,7 +45,6 @@ const ChatRoom: React.FC = () => {
     }
   };
 
-  // Debounce the typing and stop typing functions
   const debouncedHandleTyping = debounce(handleTyping, 300);
   const debouncedHandleStopTyping = debounce(handleStopTyping, 300);
 
@@ -55,7 +56,7 @@ const ChatRoom: React.FC = () => {
       console.log(token);
     }
 
-    socket.current = io("", {
+    socket.current = io("http://localhost:3000", {
       auth: {
         token,
       },
@@ -74,9 +75,9 @@ const ChatRoom: React.FC = () => {
       setTypingStatus(false);
     });
 
-    socket.current.on("receive-message", (data: string) => {
+    socket.current.on("receive-message", (data: { message: string, type: "text" | "image" }) => {
       console.log("Message received: ", data);
-      dispatch(messageAction.messageReceived({ text: data }));
+      dispatch(messageAction.messageReceived({ text: data.message, type: data.type }));
     });
 
     const fetchChatRoomDetails = async () => {
@@ -127,10 +128,27 @@ const ChatRoom: React.FC = () => {
     if (messageRef.current) {
       const message = messageRef.current.value;
       console.log("Sending message: ", message);
-      socket.current?.emit("message", { roomId: idofroom, message });
-      dispatch(messageAction.messageSent({ text: message }));
+      socket.current?.emit("message", { roomId: idofroom, message, type: "text" });
+      dispatch(messageAction.messageSent({ text: message, type: "text" }));
       messageRef.current.value = "";
     }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const imageData = event.target?.result as string;
+        socket.current?.emit("message", { roomId: idofroom, message: imageData, type: "image" });
+        dispatch(messageAction.messageSent({ text: imageData, type: "image" }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const openFileInput = () => {
+    fileInputRef.current?.click();
   };
 
   const handleModal = () => {
@@ -233,7 +251,11 @@ const ChatRoom: React.FC = () => {
                   message.type === "sent" ? styles.Sender : styles.reciever
                 }
               >
-                <p className="text">{message.text}</p>
+                {message.contentType === "text" ? (
+                  <p className="text">{message.text}</p>
+                ) : (
+                  <img src={message.text} alt="Shared image" className="max-w-full h-auto" />
+                )}
               </div>
             </div>
           ))}
@@ -251,6 +273,16 @@ const ChatRoom: React.FC = () => {
           onChange={debouncedHandleTyping}
           onBlur={debouncedHandleStopTyping}
           required
+        />
+        <button type="button" onClick={openFileInput}>
+          <IoMdImage className="text-[#808080] text-2xl" />
+        </button>
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleImageUpload}
+          accept="image/*"
         />
         <button type="submit">
           <div>

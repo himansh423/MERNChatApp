@@ -25,7 +25,8 @@ const io = new Server(server, {
 });
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 const dbURI = process.env.MONGO_URI;
 mongoose
@@ -49,21 +50,17 @@ app.get("/create-room", (req, res) => {
   res.json({ roomId });
 });
 
-// Deployment Section /////////////////
+// Deployment Section
 app.use(express.static(path.join(__dirname, "build/dist")));
 
-// Handle all other routes by serving index.html
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "build/dist", "index.html"));
 });
 
-
-
-// Deployment Section /////////////////
-
 // Socket.IO Authentication Middleware
 io.use((socket, next) => {
-  const token = socket.handshake.auth.token; 
+  const token = socket.handshake.auth.token;
+
   if (!token) {
     return next(new Error('Authentication error: No token provided'));
   }
@@ -82,16 +79,18 @@ io.on("connection", (socket) => {
 
   socket.on("message", (data) => {
     console.log("Received message: ", data);
-    socket.broadcast.to(data.roomId).emit("receive-message", data.message);
+    socket.broadcast.to(data.roomId).emit("receive-message", { message: data.message, type: data.type });
   });
 
   socket.on("join-room", (room) => {
     socket.join(room);
     console.log(`User joined room ${room}`);
   });
+
   socket.on("user-typing", ({ roomId }) => {
     socket.to(roomId).emit("user-typing");
   });
+
   socket.on("stop-typing", (roomId) => {
     socket.to(roomId).emit("stop-typing");
   });
@@ -99,8 +98,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected", socket.id);
   });
- 
-    
 });
 
 server.listen(port, () => {

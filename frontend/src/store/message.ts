@@ -4,6 +4,7 @@ export interface Message {
   id: number;
   text: string;
   type: "sent" | "received";
+  contentType: "text" | "image";
   timestamp: number;
 }
 
@@ -19,21 +20,23 @@ const messageSlice = createSlice({
   name: "message",
   initialState,
   reducers: {
-    messageSent: (state, action: PayloadAction<{ text: string }>) => {
-      const { text } = action.payload;
+    messageSent: (state, action: PayloadAction<{ text: string; type: "text" | "image" }>) => {
+      const { text, type } = action.payload;
       state.messages.push({
         id: state.messages.length,
         text,
         type: "sent",
+        contentType: type,
         timestamp: Date.now(),
       });
     },
-    messageReceived: (state, action: PayloadAction<{ text: string }>) => {
-      const { text } = action.payload;
+    messageReceived: (state, action: PayloadAction<{ text: string; type: "text" | "image" }>) => {
+      const { text, type } = action.payload;
       state.messages.push({
         id: state.messages.length,
         text,
         type: "received",
+        contentType: type,
         timestamp: Date.now(),
       });
     },
