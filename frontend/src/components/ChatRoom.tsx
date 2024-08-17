@@ -56,11 +56,6 @@ const ChatRoom: React.FC = () => {
       },
     });
 
-    socket.current?.on("user-typing", (typingUserId: string) => {
-      if (socket.current?.id !== typingUserId) {
-        setTypingStatus(true);
-      }
-    });
 
     socket.current?.on("user-typing", () => {
       setTypingStatus(true);

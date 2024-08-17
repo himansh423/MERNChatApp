@@ -91,7 +91,6 @@ io.on("connection", (socket) => {
     socket.to(roomId).emit("user-typing");
   });
   
-  // Listen for stop-typing event and broadcast to other users in the room
   socket.on("stop-typing", (roomId) => {
     socket.to(roomId).emit("stop-typing");
   });
