@@ -1,0 +1,1 @@
+import{j as e}from"./index-BR3Yruy9.js";const s="_buffer_1fiyg_1",r={buffer:s},o=()=>e.jsxs("div",{children:[e.jsx("div",{className:"h-screen w-screen absolute z-40 bg-white opacity-25"}),e.jsx("div",{className:`${r.buffer} w-[100px] h-[100px] border-t-2 border-l-2 border-yellow-400 rounded-[50%] absolute z-50 top-[50%] translate-y-[-50%] left-[50%]`})]});export{o as L};
