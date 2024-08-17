@@ -9,6 +9,7 @@ import { RootState } from "../store";
 import { messageAction } from "../store/message";
 import axios from "axios";
 import Loading from "./Loading";
+import { debounce } from 'lodash';
 
 const ChatRoom: React.FC = () => {
   const { idofroom } = useParams<{ idofroom: string }>();
@@ -29,12 +30,22 @@ const ChatRoom: React.FC = () => {
   const [typingStatus, setTypingStatus] = useState<boolean>(false);
 
   const handleTyping = () => {
-    socket.current?.emit("user-typing", { roomId: idofroom });
+    if (!typingStatus) {
+      setTypingStatus(true);
+      socket.current?.emit("user-typing", { roomId: idofroom });
+    }
   };
 
   const handleStopTyping = () => {
-    socket.current?.emit("stop-typing", idofroom);
+    if (typingStatus) {
+      setTypingStatus(false);
+      socket.current?.emit("stop-typing", idofroom);
+    }
   };
+
+  // Debounce the typing and stop typing functions
+  const debouncedHandleTyping = debounce(handleTyping, 300);
+  const debouncedHandleStopTyping = debounce(handleStopTyping, 300);
 
   useEffect(() => {
     const token = localStorage.getItem("chatToken");
@@ -237,8 +248,8 @@ const ChatRoom: React.FC = () => {
           className="text-[#808080] text-wrap"
           style={{ border: "1px solid grey" }}
           ref={messageRef}
-          onKeyPress={handleTyping}
-          onBlur={handleStopTyping}
+          onInput={debouncedHandleTyping}
+          onBlur={debouncedHandleStopTyping}
           required
         />
         <button type="submit">
