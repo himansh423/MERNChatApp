@@ -51,11 +51,13 @@ app.get("/create-room", (req, res) => {
 
 // Deployment Section /////////////////
 
-app.use(express.static(path.join(__dirname1, "../frontend/dist")));
+const buildPath = path.resolve(__dirname1, "../frontend/dist");
+app.use(express.static(buildPath));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname1, "../frontend/dist/index.html"));
+  res.sendFile(path.resolve(buildPath, "index.html"));
 });
+
 
 
 // Deployment Section /////////////////
