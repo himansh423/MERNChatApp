@@ -26,6 +26,7 @@ const ChatRoom: React.FC = () => {
   const [deleted, setDeleted] = useState<boolean>(false);
   const navigate = useNavigate();
   const [inputContainerBottom, setInputContainerBottom] = useState(0);
+  const [typingStatus, setTypingStatus] = useState<boolean>(false);
 
   const handleTyping = () => {
     socket.current?.emit("user-typing", { roomId: idofroom });
@@ -55,11 +56,11 @@ const ChatRoom: React.FC = () => {
     });
 
     socket.current?.on("user-typing", () => {
-      dispatch(messageAction.messageReceived({ text: "typing....." }));
+      setTypingStatus(true);
     });
 
     socket.current?.on("stop-typing", () => {
-      dispatch(messageAction.messageTypingStop());
+      setTypingStatus(false);
     });
 
     socket.current.on("receive-message", (data: string) => {
@@ -194,9 +195,12 @@ const ChatRoom: React.FC = () => {
         <div>
           <h1 className="text-[#BFBFBF]">{chatRoomName}</h1>
           <div className="flex text-[10px] text-[#808080]">
-            <p>{participants.participant1}</p>,
+            <p>{participants.participant1}</p>
+            <span>, </span>
             <p>{participants.participant2}</p>
           </div>
+
+          {typingStatus && <p className="text-white text-[10px]">Typing...</p>}
         </div>
         <div>
           <button
@@ -222,13 +226,6 @@ const ChatRoom: React.FC = () => {
               </div>
             </div>
           ))}
-        {/* {typingStatus && (
-          <div className="flex gap-5 flex-col justify-end">
-            <div className={styles.reciever}>
-              <p className="text-white">typing....</p>
-            </div>
-          </div>
-        )} */}
       </div>
       <form
         onSubmit={handleSubmit}

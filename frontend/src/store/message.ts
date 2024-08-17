@@ -37,9 +37,6 @@ const messageSlice = createSlice({
         timestamp: Date.now(),
       });
     },
-    messageTypingStop: (state) => {
-      state.messages.pop();
-    }
   },
 });
 
