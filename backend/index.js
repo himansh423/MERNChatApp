@@ -88,11 +88,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("user-typing", ({ roomId }) => {
-    socket.to(roomId).emit("user-typing");
+    socket.broadcast.to(data.roomId).emit("user-typing");
   });
 
   socket.on("stop-typing", (roomId) => {
-    socket.to(roomId).emit("stop-typing");
+    socket.broadcast.to(data.roomId).emit("stop-typing");
   });
 
   socket.on("disconnect", () => {
