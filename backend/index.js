@@ -89,10 +89,18 @@ io.on("connection", (socket) => {
     socket.join(room);
     console.log(`User joined room ${room}`);
   });
+  socket.on("user-typing", ({ roomId }) => {
+    socket.to(roomId).emit("user-typing");
+  });
+  socket.on("stop-typing", (roomId) => {
+    socket.to(roomId).emit("stop-typing");
+  });
 
   socket.on("disconnect", () => {
     console.log("User disconnected", socket.id);
   });
+ 
+    
 });
 
 server.listen(port, () => {
