@@ -52,7 +52,7 @@ app.get("/create-room", (req, res) => {
 // Deployment Section /////////////////
 app.use(express.static(path.join(__dirname, "build/dist")));
 
-// Serve the index.html file for any unmatched routes
+// Handle all other routes by serving index.html
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "build/dist", "index.html"));
 });
