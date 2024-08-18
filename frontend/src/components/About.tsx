@@ -11,7 +11,7 @@ const About = () => {
           <img
             className="max-w-[250px] rounded-md max-h-[250px]"
             src={chatImg}
-            alt="chatting image"
+            alt="Clyphix logo, the ultimate secure chat application designed for private, encrypted conversations. With Clyphix, you can effortlessly create and manage personalized chat rooms, ensuring your communications remain confidential and secure. Our platform offers real-time messaging and advanced privacy features, making it ideal for confidential discussions, social interactions, and business communications. Experience a seamless and secure chatting environment with Clyphix, where your privacy is our top priority. Whether connecting with friends, family, or colleagues, Clyphix provides the perfect solution for secure, end-to-end encrypted messaging. Start your private chat now with Clyphix and enjoy the peace of mind that comes with a secure, reliable, and user-friendly communication platform."
           />
         </div>
 
@@ -48,13 +48,14 @@ const About = () => {
           </p>
         </div>
         <div className="text-white h-[300px] flex flex-col gap-4 w-screen px-7">
-  <h1 className={`${styles.head} text-center`}>Join Us Today</h1>
+          <h1 className={`${styles.head} text-center`}>Join Us Today</h1>
           <p className="text-center">
             {" "}
             Start creating your private chat rooms and experience communication
             like never before. Your privacy, your control, your conversations.
           </p>
         </div>
+        
       </div>
     </main>
   );

@@ -108,9 +108,6 @@ const Burger: React.FC = () => {
         text:"Create Chatroom",
         link:"createChatRoom"
       }, {
-        text:"Contact",
-        link:"contact"
-      }, {
         text:"About",
         link:"about"
       },{

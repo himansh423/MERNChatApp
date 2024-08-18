@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import logo from "../assets/chatlogo.png"
+import logo from "../assets/logo.png"
 import { FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaYoutube } from "react-icons/fa";
@@ -14,7 +14,6 @@ const Footer = () => {
               <Link to={'/createChatRoom'}>Create</Link>
               <Link to={'/enterChat'}>Enter</Link>
               <Link to={'/about'}>About</Link>
-              <Link to={'/contact'}>Contact</Link>
             </div>
             <div className="flex text-[18px] flex-col gap-2">
             <h1 className="text-[20px] text-gray-500">Follow Us</h1>
@@ -45,8 +44,12 @@ const Footer = () => {
           <h1>CyroWeb Solutions.</h1>
         </div>
       </div>
+      <div className="w-screen bg-black px-7 h-24 flex flex-col gap-4 text-white items-center">
+          <h1 className="text-2xl font-bold">Contact Us.</h1>
+          <a href="mailto:cyrowebsolutions@gmail.com">cyrowebsolutions@gmail.com</a>
+        </div>
       <div className="h-[190px]  text-white flex flex-col items-center gap-2 w-full border-t-2 bg-black border-gray-400">
-          <img className="h-[150px] w-[150px] filter invert" src={logo} alt="" />
+          <img className="h-[150px] w-[150px]" src={logo} alt="Clyphix logo, the ultimate secure chat application designed for private, encrypted conversations. With Clyphix, you can effortlessly create and manage personalized chat rooms, ensuring your communications remain confidential and secure. Our platform offers real-time messaging and advanced privacy features, making it ideal for confidential discussions, social interactions, and business communications. Experience a seamless and secure chatting environment with Clyphix, where your privacy is our top priority. Whether connecting with friends, family, or colleagues, Clyphix provides the perfect solution for secure, end-to-end encrypted messaging. Start your private chat now with Clyphix and enjoy the peace of mind that comes with a secure, reliable, and user-friendly communication platform." />
           <p>© 2024 CyroWeb. All Rights Reserved.</p>
         </div>
     </footer>

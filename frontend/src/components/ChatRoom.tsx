@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IoSendSharp } from "react-icons/io5";
 import { IoMdImage } from "react-icons/io";
-import img from "../assets/chatlogo.png";
+import img from "../assets/logo.png";
 import styles from "./ChatRoom.module.css";
 import { io, Socket } from "socket.io-client";
 import { useNavigate, useParams } from "react-router-dom";
@@ -204,8 +204,8 @@ const ChatRoom: React.FC = () => {
         <div className="h-[37px] w-[37px] border">
           <img
             src={img}
-            className="w-[40px] filter invert h-[40px]"
-            alt="Chat logo"
+            className="w-[40px]  h-[40px]"
+            alt="Clyphix logo, the ultimate secure chat application designed for private, encrypted conversations. With Clyphix, you can effortlessly create and manage personalized chat rooms, ensuring your communications remain confidential and secure. Our platform offers real-time messaging and advanced privacy features, making it ideal for confidential discussions, social interactions, and business communications. Experience a seamless and secure chatting environment with Clyphix, where your privacy is our top priority. Whether connecting with friends, family, or colleagues, Clyphix provides the perfect solution for secure, end-to-end encrypted messaging. Start your private chat now with Clyphix and enjoy the peace of mind that comes with a secure, reliable, and user-friendly communication platform."
           />
         </div>
         <div>
