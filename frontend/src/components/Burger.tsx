@@ -5,7 +5,7 @@ import styles from "./Burger.module.css";
 import { RxCross1 } from "react-icons/rx";
 import { BurgerAction } from "../store/Burger";
 import { Link } from "react-router-dom";
-import { RootState } from "../store"; // Assuming you have a RootState type defined in your store
+import { RootState } from "../store"; 
 
 const Burger: React.FC = () => {
   const { burClick } = useSelector((store: RootState) => store.burger);
@@ -98,15 +98,33 @@ const Burger: React.FC = () => {
       <button ref={crossRef} onClick={() => handleBurgerClick()}>
         <RxCross1 className="absolute top-8 right-6 text-2xl" />
       </button>
-      {["Enter in Chatroom", "Create Chatroom", "Contact", "About","Terms & Conditions"].map((text, index) => (
+      {[{
+        text:"Dashboard",
+        link:""
+      },{
+        text:"Enter in Chatroom",
+        link:"enterChat"
+      }, {
+        text:"Create Chatroom",
+        link:"createChatRoom"
+      }, {
+        text:"Contact",
+        link:"contact"
+      }, {
+        text:"About",
+        link:"about"
+      },{
+        text:"Terms & conditions",
+        link:"termsandconditios"
+      }].map((text, index) => (
         <Link
-          to={`/${text}`}
+          to={`/${text.link}`}
           key={index}
           onClick={() => handleBurgerClick(true)}
           ref={(el) => (optionRefs.current[index] = el)}
           className="text-black w-60 h-[50px] text-2xl border-b-2 border-black"
         >
-          {text}
+          {text.text}
         </Link>
       ))}
     </div>

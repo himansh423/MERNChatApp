@@ -2,30 +2,32 @@ import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import { enter } from "../utils/ChatAuthUtils";
 import styles from "./EnterInChatRoom.module.css";
-import Loading from "../components/Loading"; // Import the Loading component
+import Loading from "../components/Loading"; 
+import { FaRegEyeSlash } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 
 const EnterInChatRoom = () => {
   const roomIdRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
-  const [buffer, setBuffer] = useState<boolean>(false); // State for loading buffer
+  const [buffer, setBuffer] = useState<boolean>(false); 
 
   const handleEnterChatroom = async (e: any) => {
     e.preventDefault();
-    setBuffer(true); // Show the loading buffer when the request starts
+    setBuffer(true); 
 
     const roomId = roomIdRef.current?.value;
     const password = passwordRef.current?.value;
 
     if (!roomId || !password) {
       alert("Please enter both room ID and password.");
-      setBuffer(false); // Hide the loading buffer if validation fails
+      setBuffer(false); 
       return;
     }
 
     try {
       const data = await enter(roomId, password);
-      console.log(data);
+      
 
       if (data.token) {
         localStorage.setItem("chatToken", data.token);
@@ -36,12 +38,19 @@ const EnterInChatRoom = () => {
         setBuffer(false); 
       }
     } catch (error) {
-      console.error("Error entering chatroom:", error);
       alert("An error occurred while trying to enter the chatroom.");
       setBuffer(false); 
     }
   };
 
+  const [type, setType] = useState("password");
+  const handleShowPass = (arg: string) => {
+    if (arg === "show") {
+      setType("text");
+    } else if (arg === "hide") {
+      setType("password");
+    }
+  };
   return (
     <main className="bg-black py-4 h-screen w-screen text-white">
       {buffer && <Loading />} 
@@ -65,13 +74,32 @@ const EnterInChatRoom = () => {
             <label htmlFor="password" className="px-1">
               Chatroom Password*
             </label>
-            <input
-              type="password"
-              className={`${styles.input} h-14 w-full border border-gray-400 lg:w-[500px] bg-[#171717] px-3 py-2 rounded-md`}
-              name="password"
-              id="password"
-              ref={passwordRef}
-            />
+            <div className="relative">
+              {type === "password" ? (
+                <div
+                  onClick={() => handleShowPass("show")}
+                  className="absolute right-3 z-10 top-[19px] text-[20px]"
+                >
+                  <FaRegEyeSlash />
+                </div>
+              ) : (
+                <div
+                  onClick={() => handleShowPass("hide")}
+                  className="absolute right-3 z-10 top-[19px] text-[20px]"
+                >
+                  <FaEye />
+                </div>
+              )}
+              <input
+                type={type}
+                ref={passwordRef}
+                required
+                placeholder="Enter your password..."
+                className={`${styles.input} h-14 w-full border border-gray-400 lg:w-[500px] bg-[#171717] px-3 py-2 rounded-md`}
+                name="password"
+                id="password"
+              />
+            </div>
           </div>
 
           <button

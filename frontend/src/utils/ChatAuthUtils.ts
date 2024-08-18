@@ -9,7 +9,6 @@ export const create = async (ChatroomName: any, ChatroomId: any, password: any,p
  
 export const enter = async (ChatroomId: any, password: any) => {
   const response = await axios.post(`${API_URL}/enter`, { ChatroomId, password });
-  console.log("token :",response.data.token)
   localStorage.setItem("detail",response.data)
   if (response.data.token) {
     localStorage.setItem('chatToken', response.data.token); // Save token

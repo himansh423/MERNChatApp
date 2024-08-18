@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { create } from "../utils/ChatAuthUtils";
 import axios from "axios";
 import styles from "./CreateChatRoom.module.css";
-import Loading from "../components/Loading"; 
+import Loading from "../components/Loading";
+import { FaRegEyeSlash } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 
 const CreateChatRoom: React.FC = () => {
   const dispatch = useDispatch();
@@ -14,7 +16,7 @@ const CreateChatRoom: React.FC = () => {
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const user1Ref = useRef<HTMLInputElement | null>(null);
   const user2Ref = useRef<HTMLInputElement | null>(null);
-  const [buffer, setBuffer] = useState<boolean>(false); 
+  const [buffer, setBuffer] = useState<boolean>(false);
 
   const createRoom = async (e: any) => {
     e.preventDefault();
@@ -23,27 +25,20 @@ const CreateChatRoom: React.FC = () => {
     try {
       const chatroomName = chatroomNameRef.current?.value;
       const chatroomPassword = passwordRef.current?.value;
-      console.log("Chatroom Name:", chatroomName);
-      console.log("Chatroom Password:", chatroomPassword);
-      
       const response = await axios.get("/create-room");
-      console.log("API Response:", response);
       const chatroomId = response.data.roomId;
-      console.log("Chatroom ID:", chatroomId);
-      
+
       const chatroomParticipants = {
         participant1: user1Ref.current?.value,
         participant2: user2Ref.current?.value,
       };
-      console.log("Participants:", chatroomParticipants);
 
-      const createResponse = await create(
+      await create(
         chatroomName,
         chatroomId,
         chatroomPassword,
         chatroomParticipants
       );
-      console.log("Create Function Response:", createResponse.data);
 
       const created = dispatch(
         CreatedChatRoomActions.ChatRoomCreated({ RoomID: chatroomId })
@@ -54,17 +49,26 @@ const CreateChatRoom: React.FC = () => {
         navigate(`/yourChatroomId`);
       }
     } catch (error) {
-      console.error("Error creating chatroom:", error);
-      setBuffer(false); 
+      setBuffer(false);
+    }
+  };
+  const [type, setType] = useState("password");
+  const handleShowPass = (arg: string) => {
+    if (arg === "show") {
+      setType("text");
+    } else if (arg === "hide") {
+      setType("password");
     }
   };
 
   return (
     <main className="bg-black py-4 h-[120vh] w-screen text-white">
-      {buffer && <Loading />} 
-      
+      {buffer && <Loading />}
+
       <div>
-        <h1 className={`${styles.head} text-center font-bold`}>Create Chatroom</h1>
+        <h1 className={`${styles.head} text-center font-bold`}>
+          Create Chatroom
+        </h1>
         <form
           onSubmit={createRoom}
           className="flex flex-col items-center mt-7 px-5"
@@ -87,15 +91,32 @@ const CreateChatRoom: React.FC = () => {
             <label htmlFor="password" className="px-1">
               Chatroom Password*
             </label>
-            <input
-              ref={passwordRef}
-              type="password"
-              className={`${styles.input} h-14 w-full border border-gray-400 lg:w-[500px] bg-[#171717] px-3 py-2 rounded-md`}
-              name="password"
-              id="password"
-              placeholder="Enter your Chatroom password"
-              autoComplete="off"
-            />
+            <div className="relative">
+              {type === "password" ? (
+                <div
+                  onClick={() => handleShowPass("show")}
+                  className="absolute right-3 z-10 top-[19px] text-[20px]"
+                >
+                  <FaRegEyeSlash />
+                </div>
+              ) : (
+                <div
+                  onClick={() => handleShowPass("hide")}
+                  className="absolute right-3 z-10 top-[19px] text-[20px]"
+                >
+                  <FaEye />
+                </div>
+              )}
+              <input
+                type={type}
+                ref={passwordRef}
+                required
+                placeholder="Enter your password..."
+                className={`${styles.input} h-14 w-full border border-gray-400 lg:w-[500px] bg-[#171717] px-3 py-2 rounded-md`}
+                name="password"
+                id="password"
+              />
+            </div>
           </div>
 
           <div className="flex flex-col gap-2 lg:items-center w-full mt-6">
@@ -131,7 +152,7 @@ const CreateChatRoom: React.FC = () => {
           <button
             type="submit"
             className={`${styles.SubmitButton} mt-7 w-full h-14 bg-purple-600 lg:w-[500px] text-white py-2 px-4 rounded`}
-            disabled={buffer} 
+            disabled={buffer}
           >
             Create Chatroom
           </button>

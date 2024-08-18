@@ -14,9 +14,6 @@ const CreatedChatroom = () => {
       .then(() => {
         alert("Copied to clipboard!");
       })
-      .catch((err) => {
-        console.error("Failed to copy: ", err);
-      });
   };
 
   return (

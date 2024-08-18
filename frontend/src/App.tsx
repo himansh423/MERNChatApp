@@ -14,6 +14,7 @@ const CreateChatRoomOptions = lazy(() => import("./components/CreateChatRoomOpti
 const CreateChatRoom = lazy(() => import("./pages/CreateChatRoom"));
 const EnterChatRoom = lazy(() => import("./pages/EnterInChatRoom"));
 const CreatedChatRoom = lazy(() => import("./components/CreatedChatroom"));
+const About = lazy(() => import("./components/About"));
 
 const AppContent = () => {
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ const AppContent = () => {
         <Route path="/createChatRoom" element={<CreateChatRoom  />} />
         <Route path="/yourChatroomId" element={<CreatedChatRoom/>}/>
         <Route path="/enterChat" element={<EnterChatRoom />} />
+        <Route path="/about" element={<About />} />
       </Routes>
       {!isChatRoom && [<Footer key="footer" />]}
     </>

@@ -50,20 +50,13 @@ const ChatRoom: React.FC = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("chatToken");
-    if (!token) {
-      console.log("token not found");
-    } else {
-      console.log(token);
-    }
-
-    socket.current = io("http://localhost:3000", {
+    socket.current = io("", {
       auth: {
         token,
       },
     });
 
     socket.current.on("connect", () => {
-      console.log("Connected with ID: ", socket.current?.id);
       socket.current?.emit("join-room", idofroom);
     });
 
@@ -76,18 +69,14 @@ const ChatRoom: React.FC = () => {
     });
 
     socket.current.on("receive-message", (data: { message: string, type: "text" | "image" }) => {
-      console.log("Message received: ", data);
       dispatch(messageAction.messageReceived({ text: data.message, type: data.type }));
     });
 
     const fetchChatRoomDetails = async () => {
-      try {
+      
         const response = await axios.get(`/api/chatroom/create/${idofroom}`);
         setChatRoomName(response.data.ChatroomName);
         setParticipants(response.data.participants);
-      } catch (error) {
-        console.error("Error fetching chatroom details:", error);
-      }
     };
 
     fetchChatRoomDetails();
@@ -127,7 +116,6 @@ const ChatRoom: React.FC = () => {
     e.preventDefault();
     if (messageRef.current) {
       const message = messageRef.current.value;
-      console.log("Sending message: ", message);
       socket.current?.emit("message", { roomId: idofroom, message, type: "text" });
       dispatch(messageAction.messageSent({ text: message, type: "text" }));
       messageRef.current.value = "";
@@ -169,7 +157,6 @@ const ChatRoom: React.FC = () => {
         setDeleted(true);
       }
     } catch (error) {
-      console.error("Error deleting chatroom:", error);
       setBuffer(false);
     }
   };
