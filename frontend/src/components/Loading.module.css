@@ -1,6 +1,6 @@
 .buffer {
   animation: buffer 1s infinite linear;
-
+  border-color: blueviolet;
 }
 
 @keyframes buffer {

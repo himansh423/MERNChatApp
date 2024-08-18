@@ -25,6 +25,7 @@ const CreatedChatRoom = lazy(() => import("./components/CreatedChatroom"));
 const About = lazy(() => import("./components/About"));
 const Terms = lazy(() => import("./components/Terms"));
 import HelmetWrapper from "./components/HelmetWrapper";
+import Loading from "./components/Loading";
 const AppContent = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -127,7 +128,7 @@ const AppContent = () => {
 const App = () => {
   return (
     <Router>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading/>}>
         <AppContent />
       </Suspense>
     </Router>
