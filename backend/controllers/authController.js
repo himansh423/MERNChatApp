@@ -33,9 +33,9 @@ exports.register = async (req, res) => {
     });
     
     const mailOptions = {
-      from: `"Mystify Support" <${process.env.EMAIL_USER}>`,
+      from: `"Clyphix Support" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: "OTP from Mystify",
+      subject: "OTP from Clyphix",
       text: `Your OTP code is ${otp}, use it within 15 minutes.`,
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6;">
@@ -45,7 +45,7 @@ exports.register = async (req, res) => {
           <p>If you did not request this OTP, please ignore this email.</p>
           <br>
           <p>Thanks,</p>
-          <p>The Mystify Team</p>
+          <p>The Clyphix Team</p>
         </div>
       `
     };
