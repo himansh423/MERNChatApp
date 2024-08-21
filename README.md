@@ -51,7 +51,7 @@
 <p>To get started with Clyphix, clone the repository and install the dependencies:</p>
 <pre><code>
 # Clone the Clyphix repository
-git clone https://github.com/your-username/clyphix.git
+git clone [https://github.com/your-username/clyphix.git](https://github.com/himansh423/MERNChatApp.git)
 
 # Install dependencies
 npm install
