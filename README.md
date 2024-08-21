@@ -7,6 +7,8 @@
 <body>
 
 <h1>Clyphix - Secure & Private Chatrooms</h1>
+<h2>Live Demo</h2>
+<p>You can access the live version of <strong>Clyphix</strong> here: <a href="https://clyphix.com/" target="_blank">clyphix.com</a>.</p>
 
 <p>Welcome to <strong>Clyphix</strong>, a cutting-edge platform designed to ensure private and secure conversations. Create, manage, and destroy private chatrooms where your chats are end-to-end encrypted and no data is stored in the database.</p>
 
